@@ -3,9 +3,7 @@ TIBCO Flogo® Enterprise is the commercially supported enterprise offering for u
 
 TIBCO Flogo® Enterprise allows customers and users to leverage the capabilities provided to build microservices and APIs - for all kinds of application development use-cases on-premise, in private/public clouds and devices.
 
-For this offering, you can at this point use the artifacts provided under the Project Flogo repositories. Please refer to the [parent Flogo repository](https://github.com/TIBCOSoftware/flogo) for more details.
-
-If you have contracted with TIBCO for commercial support of TIBCO Flogo® Enterprise and need Support, please create a Service Request for TIBCO Flogo® Enterprise by using your TIBCO Support credentials on https://support.tibco.com/.
+Currently you can use the artifacts provided under the Project Flogo repositories. Please refer to the [parent Flogo repository](https://github.com/TIBCOSoftware/flogo) for more details. If you have contracted with TIBCO for commercial support of TIBCO Flogo® Enterprise and need Support, please create a Service Request for TIBCO Flogo® Enterprise by using your TIBCO Support credentials on https://support.tibco.com/.
 
 ----------
 
