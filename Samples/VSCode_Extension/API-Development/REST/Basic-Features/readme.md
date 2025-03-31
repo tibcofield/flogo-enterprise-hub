@@ -19,7 +19,7 @@ This sample demonstrates some of the REST features present in the FLOGO ReceiveH
 
 ## Import the sample apps in the Workspace
  
-1. Download the sample's .flogo files 'flogo.rest.service.flogo' and 'Invoke.flogo.rest.service.flogo' or clone the repo and click on these files, apps for producer and consumer services respectively.
+1. Download the samples .flogo files 'flogo.rest.service.flogo' and 'Invoke.flogo.rest.service.flogo' or clone the repo and click on these files, these apps are for producer and consumer services respectively.
 
 2. Open the Workspace in the Visual Studio Code and click on the 'flogo.rest.service.flogo' file under the Explorer. 
 ![Open the app](../../../images/REST/Basic/1.png) 
@@ -33,13 +33,17 @@ This sample demonstrates some of the REST features present in the FLOGO ReceiveH
 5. After importing the 'flogo.rest.service' app(producer service), repeat the above steps to import and open the Invoke.flogo.rest.service app(consumer service).
 
 ![Open the consumer service](../../../images/REST/Basic/4.png)
+
+6. Click on the 'post_Invokebookdetails' flow to see the flow implementation.
 ![Open the flow](../../../images/REST/Basic/5.png)
 
 ## Understanding the configuration
-In the 'flogo.rest.service', App level Spec is attached in Trigger Settings "Configure Using API Specs" setting to true and clicking the "Use app level spec" toggle. This API spec was uploaded Under the Specs tab. When A RecevieHTTPMessage trigger is configured with an API spec path, query and header parameters are auto-populated. We can see that multiple response codes have also been auto-populated in the Rest trigger. Few Response codes have Response headers as well.
+In the 'flogo.rest.service', App level Spec is attached in Trigger Settings "Configure Using API Specs" setting to true and by clicking the "Use app level spec" toggle. This API spec was uploaded Under the Specs tab. 
+When A RecevieHTTPMessage trigger is configured with an API spec; path, query and header parameters are auto-populated. We can see that multiple response codes have also been auto-populated in the Rest trigger. Few Response codes have Response headers as well.
 ![MultipleResponseCode_configuration](../../../images/REST/Basic/MultipleResponseCode.png)
 
-For each response code we are returning a different response for that we're using branching and conditions have been put, when these conditions are satisfied that particular branch gets executed and that response is returned. Like here for 200 Success response the condition is that the book array should contain more than 2 objects but less than or equal to 10 objects, the count of the array object is taken from the payload passed in the input.
+For each response code we are returning a different response for that we're using branching and conditions have been put, when these conditions are satisfied that particular branch gets executed and that response is returned.
+Like here for 200 Success response the condition is that the book array should contain more than 2 objects but less than or equal to 10 objects, the count of the array object is taken from the payload passed in the input.
 ![SuccessBranchCondition](../../../images/REST/Basic/SuccessBranchCondition.png)
 
 Similarly, for Error 400 response we have a condition that query parameter 'id' should not be between 0 to 10. If 'id' is negative or greater than 10 integer value then 400 error will be returned.
