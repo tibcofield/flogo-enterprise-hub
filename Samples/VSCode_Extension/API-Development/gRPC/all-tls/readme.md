@@ -26,21 +26,21 @@
 
 4. Select the gRPC option and browse the .proto file (e.g., greet.proto) from your local disk.
 
-![Select grpc option](../../images/grpc/1.png)
+![Select grpc option](../../../images/grpc/1.png)
 
 5. Click Import and navigate to the Flows tab.
 
-![Click on import](../../images/grpc/2.png)
+![Click on import](../../../images/grpc/2.png)
 
 6. Add a gRPC Trigger activity and toggle the option to Use App Level Spec for the proto file.
 
-![Choose the spec](../../images/grpc/3.png)
+![Choose the spec](../../../images/grpc/3.png)
 
 7. Set the Secure Connection and Mutual TLS options to true.
 
 8. Provide the appropriate CA certificate, server certificate, and server key for mutual authentication.
 
-![Provide Certificates](../../images/grpc/4.png)
+![Provide Certificates](../../../images/grpc/4.png)
 
 ### Create the gRPC Client Application
 
@@ -54,13 +54,13 @@
 
 4. Toggle the option Use App Level Spec to link it with the imported proto file.
 
-![Choose spec](../../images/grpc/5.png)
+![Choose spec](../../../images/grpc/5.png)
 
 5. Configure the gRPC Invoke activity to point to the server's endpoint (e.g., localhost:6443). 
 
 6. Ensure the client is configured to load the CA certificate, client certificate, and client key for mutual authentication. 
 
-![Provide certificates](../../images/grpc/6.png)
+![Provide certificates](../../../images/grpc/6.png)
 
 7. The client should verify the server’s certificate using the CA certificate and present its own certificate to authenticate itself.
 
@@ -74,19 +74,19 @@
 
 2. Click the Run button in VS Code for the server application first to start the gRPC server.
 
-![Run server](../../images/grpc/7.png)
+![Run server](../../../images/grpc/7.png)
 
 3. Once the server is running, click Run again for the client application to start the client.
 
-![Run client](../../images/grpc/8.png)
+![Run client](../../../images/grpc/8.png)
 
 4. The client will use the REST trigger to call the gRPC service on the server, and the communication will be secured using mutual TLS authentication.
 
 5. Logs for both the server and client will appear directly in the integrated terminal in VS Code.
 
-![Server](../../images/grpc/9.png)
+![Server](../../../images/grpc/9.png)
 
-![client](../../images/grpc/10.png)
+![client](../../../images/grpc/10.png)
 
 
 ### Notes
