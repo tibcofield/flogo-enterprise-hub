@@ -67,7 +67,7 @@ As the consumer app is also a multiple response code service ConfigureHTTPRespon
 ## Run the application
 
 After copying both the apps in the workspace, create app executable binaries for both the apps to test them locally. Executable can be created based on the OS and architecture where the app will be executed. For creating binaries for testing in local environment create a "Local Runtime" first.
-![Create binary](../../../images/REST/Basic /CreateBinary.png)
+![Create binary](../../../images/REST/Basic/CreateBinary.png)
 
 Now, run the 'flogo.rest.service' app first. Export the URL of the Service app in the 'Invoke.flogo.rest.service' app before running the invoking app like this:
 
