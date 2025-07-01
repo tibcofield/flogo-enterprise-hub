@@ -15,11 +15,11 @@ build: build-binary build-container
 
 .PHONY: build-binary
 build-binary:
-	flogo-cli build-exe -c ${FLOGO_CONTEXT} -n ./bin/${IMAGE_NAME} -f ./app/${FLOGO_FILE}
+	flogobuild build-exe -c ${FLOGO_CONTEXT} -n ./bin/${IMAGE_NAME} -f ./app/${FLOGO_FILE}
 
 .PHONY: build-mock-binary
 build-mock-binary:
-	flogo-cli build-exe -c ${FLOGO_CONTEXT} -n ./mock/bin/${IMAGE_NAME} -f ./mock/${FLOGO_FILE}
+	flogobuild build-exe -c ${FLOGO_CONTEXT} -n ./mock/bin/${IMAGE_NAME} -f ./mock/${FLOGO_FILE}
 
 # Build the Docker image
 .PHONY: build-container
