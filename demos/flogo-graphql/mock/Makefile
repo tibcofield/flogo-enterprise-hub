@@ -12,11 +12,11 @@ build: build-binary build-tp
 
 .PHONY: build-binary
 build-binary:
-	flogo-cli build-exe -c ${FLOGO_CONTEXT} -n ./bin/${IMAGE_NAME} -f ./${FLOGO_FILE}
+	flogobuild build-exe -c ${FLOGO_CONTEXT} -n ./bin/${IMAGE_NAME} -f ./${FLOGO_FILE}
 
 .PHONY: build-tp
 build-tp:
-	flogo-cli build-tp-deployment -c ${FLOGO_CONTEXT} -f ./${FLOGO_FILE}  -o ./tp
+	flogobuild build-tp-deployment -c ${FLOGO_CONTEXT} -f ./${FLOGO_FILE}  -o ./tp
 
 .PHONY:  remove-binary
 remove-binary:
