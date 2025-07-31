@@ -1,0 +1,987 @@
+{
+  "imports": [
+    "github.com/project-flogo/flow",
+    "github.com/project-flogo/contrib/activity/noop",
+    "github.com/tibco/flogo-general/src/app/General/activity/log",
+    "github.com/tibco/flogo-general/src/app/General/activity/mapper",
+    "github.com/project-flogo/contrib/activity/actreturn",
+    "github.com/tibco/flogo-general/src/app/General/trigger/rest",
+    "github.com/project-flogo/contrib/function/array",
+    "github.com/project-flogo/contrib/function/string",
+    "github.com/project-flogo/contrib/function/coerce"
+  ],
+  "name": "CustomersProductsSalesAPI",
+  "description": "API to return customers, products, sales data",
+  "version": "1.0.0",
+  "type": "flogo:app",
+  "appModel": "1.1.1",
+  "tags": [],
+  "triggers": [
+    {
+      "ref": "#rest",
+      "name": "tibco-wi-rest",
+      "description": "Simple REST Trigger",
+      "settings": {
+        "port": "=$property[\"EntityAPI.HTTPPort\"]",
+        "APISpecUpdate": false,
+        "swagger": "",
+        "swaggerVersion": "v2",
+        "apiVersion": "1.0.0",
+        "secureConnection": false,
+        "serverKey": "",
+        "caCertificate": ""
+      },
+      "id": "ReceiveHTTPMessage",
+      "handlers": [
+        {
+          "description": "Get a list of customers.",
+          "settings": {
+            "Method": "GET",
+            "reqType": "application/json",
+            "Path": "/customers",
+            "OutputValidation": false
+          },
+          "action": {
+            "ref": "github.com/project-flogo/flow",
+            "settings": {
+              "flowURI": "res://flow:Get_Customers_flow"
+            },
+            "input": {
+              "headers": "=$.headers",
+              "requestURI": "=$.requestURI",
+              "method": "=$.method"
+            },
+            "output": {
+              "data": {
+                "mapping": {
+                  "customer": {
+                    "@conditional": [
+                      {
+                        "isdefined($.data.customer)": {
+                          "@foreach($.data.customer,customer)": {
+                            "customer_id": "=$loop.customer_id",
+                            "customer_name": "=$loop.customer_name",
+                            "customer_age": "=$loop.customer_age",
+                            "customer_street": "=$loop.customer_street",
+                            "customer_city": "=$loop.customer_city",
+                            "customer_state": "=$loop.customer_state",
+                            "customer_country": "=$loop.customer_country"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "reply": {
+            "code": 200,
+            "configureResponseCodes": false,
+            "message": {}
+          },
+          "schemas": {
+            "reply": {
+              "data": "schema://CustomersSchema",
+              "responseBody": {
+                "type": "json",
+                "value": "{\"type\":\"object\",\"properties\":{\"body\":{\"type\":\"any\"},\"headers\":{\"type\":\"object\"}}}",
+                "fe_metadata": "{\"type\":\"object\",\"properties\":{\"body\":{\"type\":\"any\"},\"headers\":{\"type\":\"object\"}}}"
+              }
+            },
+            "output": {
+              "headers": {
+                "type": "json",
+                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+              }
+            }
+          },
+          "name": "Get_Customers_flow"
+        },
+        {
+          "description": "Get a list of products.",
+          "settings": {
+            "Method": "GET",
+            "reqType": "application/json",
+            "Path": "/products",
+            "OutputValidation": false
+          },
+          "action": {
+            "ref": "github.com/project-flogo/flow",
+            "settings": {
+              "flowURI": "res://flow:Get_Products_flow"
+            },
+            "input": {
+              "headers": "=$.headers",
+              "requestURI": "=$.method",
+              "method": "=$.method"
+            },
+            "output": {
+              "code": "=$.code",
+              "data": "=$.data"
+            }
+          },
+          "reply": {
+            "code": 200,
+            "configureResponseCodes": false,
+            "message": {}
+          },
+          "schemas": {
+            "reply": {
+              "data": "schema://ProductsSchema",
+              "responseBody": {
+                "type": "json",
+                "value": "{\"type\":\"object\",\"properties\":{\"body\":{\"type\":\"any\"},\"headers\":{\"type\":\"object\"}}}",
+                "fe_metadata": "{\"type\":\"object\",\"properties\":{\"body\":{\"type\":\"any\"},\"headers\":{\"type\":\"object\"}}}"
+              }
+            },
+            "output": {
+              "headers": {
+                "type": "json",
+                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+              }
+            }
+          },
+          "name": "Get_Products_flow"
+        },
+        {
+          "description": "Get a list of sales.",
+          "settings": {
+            "Method": "GET",
+            "reqType": "application/json",
+            "Path": "/sales",
+            "OutputValidation": false
+          },
+          "action": {
+            "ref": "github.com/project-flogo/flow",
+            "settings": {
+              "flowURI": "res://flow:Get_Sales_flow"
+            },
+            "input": {
+              "headers": "=$.headers",
+              "requestURI": "=$.requestURI",
+              "method": "=$.method"
+            },
+            "output": {
+              "data": "=$.data"
+            }
+          },
+          "reply": {
+            "code": 200,
+            "configureResponseCodes": false,
+            "message": {}
+          },
+          "schemas": {
+            "reply": {
+              "data": "schema://SalesSchema",
+              "responseBody": {
+                "type": "json",
+                "value": "{\"type\":\"object\",\"properties\":{\"body\":{\"type\":\"any\"},\"headers\":{\"type\":\"object\"}}}",
+                "fe_metadata": "{\"type\":\"object\",\"properties\":{\"body\":{\"type\":\"any\"},\"headers\":{\"type\":\"object\"}}}"
+              }
+            },
+            "output": {
+              "headers": {
+                "type": "json",
+                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+              }
+            }
+          },
+          "name": "Get_Sales_flow"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "flow:Get_Customers_flow",
+      "data": {
+        "name": "Get_Customers_flow",
+        "description": "Get a list of customers.",
+        "links": [
+          {
+            "id": 1,
+            "from": "StartActivity",
+            "to": "LogStart",
+            "type": "label",
+            "label": "StartActivity to LogMessage1"
+          },
+          {
+            "id": 2,
+            "from": "LogStart",
+            "to": "Mapper",
+            "type": "label",
+            "label": "LogStart to Mapper"
+          },
+          {
+            "id": 3,
+            "from": "Mapper",
+            "to": "LogEnd",
+            "type": "label",
+            "label": "Mapper to LogEnd"
+          },
+          {
+            "id": 4,
+            "from": "LogEnd",
+            "to": "Return",
+            "type": "label",
+            "label": "LogMessage2 to Return"
+          }
+        ],
+        "tasks": [
+          {
+            "id": "StartActivity",
+            "name": "StartActivity",
+            "description": "NoOp Activity",
+            "activity": {
+              "ref": "#noop"
+            }
+          },
+          {
+            "id": "LogStart",
+            "name": "LogStart",
+            "description": "Simple Log Message Activity",
+            "activity": {
+              "ref": "#log",
+              "input": {
+                "Log Level": "INFO",
+                "flowInfo": false,
+                "message": "=string.concat(\"Start... \",$flowctx[\"FlowName\"])",
+                "logLevel": ""
+              }
+            }
+          },
+          {
+            "id": "Mapper",
+            "name": "Mapper",
+            "description": "Mapper Activity",
+            "activity": {
+              "ref": "#mapper",
+              "input": {
+                "input": "=coerce.toObject('{\"customer\":[{\"customer_age\":\"45\",\"customer_city\":\"metropolis\",\"customer_country\":\"united states\",\"customer_id\":1,\"customer_name\":\"clark kent\",\"customer_state\":\"new york\",\"customer_street\":\"344 clinton street\"},{\"customer_age\":\"5000\",\"customer_city\":\"london\",\"customer_country\":\"united kingdom\",\"customer_id\":2,\"customer_name\":\"diana prince\",\"customer_state\":\"england\",\"customer_street\":\"71 aldwych\"},{\"customer_age\":\"38\",\"customer_city\":\"san francisco\",\"customer_country\":\"united states\",\"customer_id\":3,\"customer_name\":\"scott lang\",\"customer_state\":\"california\",\"customer_street\":\"18th street\"},{\"customer_age\":\"27\",\"customer_city\":\"new york\",\"customer_country\":\"united states\",\"customer_id\":4,\"customer_name\":\"steve rogers\",\"customer_state\":\"new york\",\"customer_street\":\"569 leaman place, Brooklyn heights\"},{\"customer_age\":\"38\",\"customer_city\":\"new york\",\"customer_country\":\"united states\",\"customer_id\":5,\"customer_name\":\"tony stark\",\"customer_state\":\"new york\",\"customer_street\":\"59th street, manhattan\"},{\"customer_age\":\"15\",\"customer_city\":\"new york\",\"customer_country\":\"united states\",\"customer_id\":6,\"customer_name\":\"peter parker\",\"customer_state\":\"new york\",\"customer_street\":\"20 ingram street, forest hills, queens\"},{\"customer_age\":\"35\",\"customer_city\":\"gotham city\",\"customer_country\":\"united states\",\"customer_id\":7,\"customer_name\":\"bruce wayne\",\"customer_state\":\"new york\",\"customer_street\":\"wayne manor\"},{\"customer_age\":\"1047\",\"customer_city\":\"unknown\",\"customer_country\":\"united states\",\"customer_id\":8,\"customer_name\":\"thor odinson\",\"customer_state\":\"unknown\",\"customer_street\":\"unknown\"},{\"customer_age\":\"35\",\"customer_city\":\"unknown\",\"customer_country\":\"united states\",\"customer_id\":9,\"customer_name\":\"bruce banner\",\"customer_state\":\"unknown\",\"customer_street\":\"unknown\"},{\"customer_age\":\"26\",\"customer_city\":\"unknown\",\"customer_country\":\"united states\",\"customer_id\":10,\"customer_name\":\"natasha romanoff\",\"customer_state\":\"unknown\",\"customer_street\":\"unknown\"},{\"customer_age\":\"41\",\"customer_city\":\"new york\",\"customer_country\":\"united states\",\"customer_id\":11,\"customer_name\":\"cliff barton\",\"customer_state\":\"new york\",\"customer_street\":\"350 quincy street, brooklyn\"},{\"customer_age\":\"40\",\"customer_city\":\"new york\",\"customer_country\":\"united states\",\"customer_id\":12,\"customer_name\":\"matt murdock\",\"customer_state\":\"new york\",\"customer_street\":\"10th street\"},{\"customer_age\":\"32\",\"customer_city\":\"new york\",\"customer_country\":\"united states\",\"customer_id\":13,\"customer_name\":\"stephen strange\",\"customer_state\":\"new york\",\"customer_street\":\"177a bleecker street, Greenwich village\"},{\"customer_age\":\"34\",\"customer_city\":\"westview\",\"customer_country\":\"united states\",\"customer_id\":14,\"customer_name\":\"wanda maximoff\",\"customer_state\":\"new jersey\",\"customer_street\":\"2800 sherwood drive\"},{\"customer_age\":\"16\",\"customer_city\":\"jersey city\",\"customer_country\":\"united states\",\"customer_id\":15,\"customer_name\":\"kamala khan\",\"customer_state\":\"new jersey\",\"customer_street\":\"179 grove street\"},{\"customer_age\":\"22\",\"customer_city\":\"new york\",\"customer_country\":\"united states\",\"customer_id\":16,\"customer_name\":\"kate bishop\",\"customer_state\":\"new york\",\"customer_street\":\"350 quincy street, brooklyn\"},{\"customer_age\":\"18\",\"customer_city\":\"san francisco\",\"customer_country\":\"united states\",\"customer_id\":17,\"customer_name\":\"cassie lang\",\"customer_state\":\"california\",\"customer_street\":\"18th street\"}]}')"
+              },
+              "schemas": {
+                "input": {
+                  "input": "schema://CustomersSchema"
+                },
+                "output": {
+                  "output": {
+                    "type": "json",
+                    "value": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"customer\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"customer_id\": {\n            \"type\": \"number\"\n          },\n          \"customer_name\": {\n            \"type\": \"string\"\n          },\n          \"customer_age\": {\n            \"type\": \"number\"\n          },\n          \"customer_street\": {\n            \"type\": \"string\"\n          },\n          \"customer_city\": {\n            \"type\": \"string\"\n          },\n          \"customer_state\": {\n            \"type\": \"string\"\n          },\n          \"customer_country\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+                    "fe_metadata": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"customer\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"customer_id\": {\n            \"type\": \"number\"\n          },\n          \"customer_name\": {\n            \"type\": \"string\"\n          },\n          \"customer_age\": {\n            \"type\": \"number\"\n          },\n          \"customer_street\": {\n            \"type\": \"string\"\n          },\n          \"customer_city\": {\n            \"type\": \"string\"\n          },\n          \"customer_state\": {\n            \"type\": \"string\"\n          },\n          \"customer_country\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+                  }
+                }
+              },
+              "feSchemaMap": {}
+            }
+          },
+          {
+            "id": "LogEnd",
+            "name": "LogEnd",
+            "description": "Simple Log Message Activity",
+            "activity": {
+              "ref": "#log",
+              "input": {
+                "Log Level": "INFO",
+                "flowInfo": false,
+                "message": "=coerce.toString($activity[Mapper].output)",
+                "logLevel": ""
+              }
+            }
+          },
+          {
+            "id": "Return",
+            "name": "Return",
+            "description": "Simple Return Activity",
+            "activity": {
+              "ref": "#actreturn",
+              "settings": {
+                "mappings": {
+                  "code": 200,
+                  "data": "=$activity[Mapper].output"
+                }
+              }
+            }
+          }
+        ],
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjQ3LCJ5IjoxMDd9LCJMb2dTdGFydCI6eyJ4IjoxNDksInkiOjk2fSwiTWFwcGVyIjp7IngiOjMzMCwieSI6OTh9LCJMb2dFbmQiOnsieCI6NTIzLCJ5IjoxMDB9LCJSZXR1cm4iOnsieCI6NzExLCJ5Ijo5OX19",
+        "errorHandler": {
+          "tasks": [
+            {
+              "id": "LogError",
+              "name": "LogError",
+              "description": "Simple Log Message Activity",
+              "activity": {
+                "ref": "#log",
+                "input": {
+                  "Log Level": "ERROR",
+                  "flowInfo": false,
+                  "message": "=string.concat(\"FlowName:\", $flowctx[\"FlowName\"],\"activity:\", $error.activity,\"message:\", $error.message, \"data:\", $error.data)",
+                  "logLevel": ""
+                }
+              }
+            },
+            {
+              "id": "ReturnError",
+              "name": "ReturnError",
+              "description": "Simple Return Activity",
+              "activity": {
+                "ref": "#actreturn",
+                "settings": {
+                  "mappings": {
+                    "code": 500
+                  }
+                }
+              }
+            }
+          ],
+          "links": [
+            {
+              "id": 5,
+              "from": "LogError",
+              "to": "ReturnError",
+              "type": "label",
+              "label": "LogError to Return1"
+            }
+          ],
+          "fe_metadata": "eyJMb2dFcnJvciI6eyJ4IjoyOTksInkiOjk5fSwiUmV0dXJuRXJyb3IiOnsieCI6NDk0LCJ5Ijo5OH19"
+        },
+        "metadata": {
+          "input": [
+            {
+              "name": "headers",
+              "type": "object",
+              "schema": {
+                "type": "json",
+                "value": "{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}}"
+              }
+            },
+            {
+              "name": "requestURI",
+              "type": "string"
+            },
+            {
+              "name": "method",
+              "type": "string"
+            }
+          ],
+          "output": [
+            {
+              "name": "code",
+              "type": "integer"
+            },
+            {
+              "name": "data",
+              "type": "object",
+              "schema": {
+                "type": "json",
+                "value": "{\"customer\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"customer_id\":{\"type\":\"number\"},\"customer_name\":{\"type\":\"string\"},\"customer_age\":{\"type\":\"number\"},\"customer_street\":{\"type\":\"string\"},\"customer_city\":{\"type\":\"string\"},\"customer_state\":{\"type\":\"string\"},\"customer_country\":{\"type\":\"string\"}}}}}"
+              }
+            }
+          ],
+          "fe_metadata": {
+            "input": "{\"type\":\"object\",\"title\":\"ReceiveHTTPMessage\",\"properties\":{\"headers\":{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]},\"requestURI\":{\"type\":\"string\",\"required\":false},\"method\":{\"type\":\"string\",\"required\":false}}}",
+            "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"code\":{\"type\":\"integer\",\"required\":false},\"data\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"customer\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"customer_id\":{\"type\":\"number\"},\"customer_name\":{\"type\":\"string\"},\"customer_age\":{\"type\":\"number\"},\"customer_street\":{\"type\":\"string\"},\"customer_city\":{\"type\":\"string\"},\"customer_state\":{\"type\":\"string\"},\"customer_country\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+          }
+        },
+        "explicitReply": true
+      }
+    },
+    {
+      "id": "flow:Get_Products_flow",
+      "data": {
+        "name": "Get_Products_flow",
+        "description": "Get a list of products.",
+        "links": [
+          {
+            "id": 1,
+            "from": "StartActivity",
+            "to": "LogStart",
+            "type": "label",
+            "label": "StartActivity to LogMessage1"
+          },
+          {
+            "id": 2,
+            "from": "LogStart",
+            "to": "Mapper",
+            "type": "label",
+            "label": "LogStart to Mapper"
+          },
+          {
+            "id": 3,
+            "from": "Mapper",
+            "to": "LogEnd",
+            "type": "label",
+            "label": "Mapper to LogEnd"
+          },
+          {
+            "id": 4,
+            "from": "LogEnd",
+            "to": "Return",
+            "type": "label",
+            "label": "LogMessage2 to Return"
+          }
+        ],
+        "tasks": [
+          {
+            "id": "StartActivity",
+            "name": "StartActivity",
+            "description": "NoOp Activity",
+            "activity": {
+              "ref": "#noop"
+            }
+          },
+          {
+            "id": "LogStart",
+            "name": "LogStart",
+            "description": "Simple Log Message Activity",
+            "activity": {
+              "ref": "#log",
+              "input": {
+                "Log Level": "INFO",
+                "flowInfo": false,
+                "message": "=string.concat(\"Start... \",$flowctx[\"FlowName\"])",
+                "logLevel": ""
+              }
+            }
+          },
+          {
+            "id": "Mapper",
+            "name": "Mapper",
+            "description": "Mapper Activity",
+            "activity": {
+              "ref": "#mapper",
+              "input": {
+                "input": "=coerce.toObject('{\"product\":[{\"product_cost\":\"1000\",\"product_id\":1,\"product_msrp\":\"2000\",\"product_name\":\"red cape\",\"product_quantity\":\"20\"},{\"product_cost\":\"100000\",\"product_id\":2,\"product_msrp\":\"100000\",\"product_name\":\"magic lasso\",\"product_quantity\":\"0\"},{\"product_cost\":\"8000\",\"product_id\":3,\"product_msrp\":\"20000\",\"product_name\":\"pym particles disc\",\"product_quantity\":\"4\"},{\"product_cost\":\"1000\",\"product_id\":4,\"product_msrp\":\"100000\",\"product_name\":\"vibranium shield\",\"product_quantity\":\"0\"},{\"product_cost\":\"10000\",\"product_id\":5,\"product_msrp\":\"50000\",\"product_name\":\"arc reactor\",\"product_quantity\":\"2\"},{\"product_cost\":\"500\",\"product_id\":6,\"product_msrp\":\"2000\",\"product_name\":\"spider-suit\",\"product_quantity\":\"5\"},{\"product_cost\":\"1000\",\"product_id\":7,\"product_msrp\":\"10000\",\"product_name\":\"bat cape\",\"product_quantity\":\"10\"},{\"product_cost\":\"5000\",\"product_id\":8,\"product_msrp\":\"100000\",\"product_name\":\"mjolnir hammer\",\"product_quantity\":\"0\"}]}')"
+              },
+              "schemas": {
+                "input": {
+                  "input": "schema://ProductsSchema"
+                },
+                "output": {
+                  "output": {
+                    "type": "json",
+                    "value": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"product\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"product_id\": {\n            \"type\": \"number\"\n          },\n          \"product_name\": {\n            \"type\": \"string\"\n          },\n          \"product_cost\": {\n            \"type\": \"string\"\n          },\n          \"product_msrp\": {\n            \"type\": \"string\"\n          },\n          \"product_quantity\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+                    "fe_metadata": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"product\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"product_id\": {\n            \"type\": \"number\"\n          },\n          \"product_name\": {\n            \"type\": \"string\"\n          },\n          \"product_cost\": {\n            \"type\": \"string\"\n          },\n          \"product_msrp\": {\n            \"type\": \"string\"\n          },\n          \"product_quantity\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+                  }
+                }
+              },
+              "feSchemaMap": {}
+            }
+          },
+          {
+            "id": "LogEnd",
+            "name": "LogEnd",
+            "description": "Simple Log Message Activity",
+            "activity": {
+              "ref": "#log",
+              "input": {
+                "Log Level": "INFO",
+                "flowInfo": false,
+                "message": "=coerce.toString($activity[Mapper].output)",
+                "logLevel": ""
+              }
+            }
+          },
+          {
+            "id": "Return",
+            "name": "Return",
+            "description": "Simple Return Activity",
+            "activity": {
+              "ref": "#actreturn",
+              "settings": {
+                "mappings": {
+                  "code": 200,
+                  "data": "=$activity[Mapper].output"
+                }
+              }
+            }
+          }
+        ],
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjQ3LCJ5IjoxMDd9LCJMb2dTdGFydCI6eyJ4IjoxNDksInkiOjk2fSwiTWFwcGVyIjp7IngiOjMzNSwieSI6OTd9LCJMb2dFbmQiOnsieCI6NTIzLCJ5IjoxMDB9LCJSZXR1cm4iOnsieCI6NzExLCJ5Ijo5OX19",
+        "errorHandler": {
+          "tasks": [
+            {
+              "id": "LogError",
+              "name": "LogError",
+              "description": "Simple Log Message Activity",
+              "activity": {
+                "ref": "#log",
+                "input": {
+                  "Log Level": "ERROR",
+                  "flowInfo": false,
+                  "message": "=string.concat(\"FlowName:\", $flowctx[\"FlowName\"],\"activity:\", $error.activity,\"message:\", $error.message, \"data:\", $error.data)",
+                  "logLevel": ""
+                }
+              }
+            },
+            {
+              "id": "ReturnError",
+              "name": "ReturnError",
+              "description": "Simple Return Activity",
+              "activity": {
+                "ref": "#actreturn",
+                "settings": {
+                  "mappings": {
+                    "code": 500
+                  }
+                }
+              }
+            }
+          ],
+          "links": [
+            {
+              "id": 5,
+              "from": "LogError",
+              "to": "ReturnError",
+              "type": "label",
+              "label": "LogError to Return1"
+            }
+          ],
+          "fe_metadata": "eyJMb2dFcnJvciI6eyJ4IjoyOTksInkiOjk5fSwiUmV0dXJuRXJyb3IiOnsieCI6NDk0LCJ5Ijo5OH19"
+        },
+        "metadata": {
+          "input": [
+            {
+              "name": "headers",
+              "type": "object",
+              "schema": {
+                "type": "json",
+                "value": "{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}}"
+              }
+            },
+            {
+              "name": "requestURI",
+              "type": "string"
+            },
+            {
+              "name": "method",
+              "type": "string"
+            }
+          ],
+          "output": [
+            {
+              "name": "code",
+              "type": "integer"
+            },
+            {
+              "name": "data",
+              "type": "object",
+              "schema": {
+                "type": "json",
+                "value": "{\"product\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"product_id\":{\"type\":\"number\"},\"product_name\":{\"type\":\"string\"},\"product_cost\":{\"type\":\"string\"},\"product_msrp\":{\"type\":\"string\"},\"product_quantity\":{\"type\":\"string\"}}}}}"
+              }
+            }
+          ],
+          "fe_metadata": {
+            "input": "{\"type\":\"object\",\"title\":\"ReceiveHTTPMessage\",\"properties\":{\"headers\":{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]},\"requestURI\":{\"type\":\"string\",\"required\":false},\"method\":{\"type\":\"string\",\"required\":false}}}",
+            "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"code\":{\"type\":\"integer\",\"required\":false},\"data\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"product\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"product_id\":{\"type\":\"number\"},\"product_name\":{\"type\":\"string\"},\"product_cost\":{\"type\":\"string\"},\"product_msrp\":{\"type\":\"string\"},\"product_quantity\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+          }
+        },
+        "explicitReply": true
+      }
+    },
+    {
+      "id": "flow:Get_Sales_flow",
+      "data": {
+        "name": "Get_Sales_flow",
+        "description": "Get a list of sales.",
+        "links": [
+          {
+            "id": 1,
+            "from": "StartActivity",
+            "to": "LogStart",
+            "type": "label",
+            "label": "StartActivity to LogMessage1"
+          },
+          {
+            "id": 2,
+            "from": "LogStart",
+            "to": "Mapper",
+            "type": "label",
+            "label": "LogStart to Mapper"
+          },
+          {
+            "id": 3,
+            "from": "Mapper",
+            "to": "LogEnd",
+            "type": "label",
+            "label": "Mapper to LogEnd"
+          },
+          {
+            "id": 4,
+            "from": "LogEnd",
+            "to": "Return",
+            "type": "label",
+            "label": "LogMessage2 to Return"
+          }
+        ],
+        "tasks": [
+          {
+            "id": "StartActivity",
+            "name": "StartActivity",
+            "description": "NoOp Activity",
+            "activity": {
+              "ref": "#noop"
+            }
+          },
+          {
+            "id": "LogStart",
+            "name": "LogStart",
+            "description": "Simple Log Message Activity",
+            "activity": {
+              "ref": "#log",
+              "input": {
+                "Log Level": "INFO",
+                "flowInfo": false,
+                "message": "=string.concat(\"Start... \",$flowctx[\"FlowName\"])",
+                "logLevel": ""
+              }
+            }
+          },
+          {
+            "id": "Mapper",
+            "name": "Mapper",
+            "description": "Mapper Activity",
+            "activity": {
+              "ref": "#mapper",
+              "input": {
+                "input": "=coerce.toObject('{\"sale\":[{\"customer_name\":\"clark kent\",\"product_name\":\"red cape\",\"sale_date\":\"01-jan-2025\",\"sale_id\":1,\"sale_price\":\"2591\"},{\"customer_name\":\"bruce wayne\",\"product_name\":\"bat cape\",\"sale_date\":\"15-jan-2025\",\"sale_id\":2,\"sale_price\":\"13000\"},{\"customer_name\":\"diana prince\",\"product_name\":\"magic lasso\",\"sale_date\":\"01-feb-2025\",\"sale_id\":3,\"sale_price\":\"143953\"},{\"customer_name\":\"scott lang\",\"product_name\":\"pym particles disc\",\"sale_date\":\"15-feb-2025\",\"sale_id\":4,\"sale_price\":\"23845\"},{\"customer_name\":\"steve rogers\",\"product_name\":\"vibranium shield\",\"sale_date\":\"21-feb-2025\",\"sale_id\":5,\"sale_price\":\"139503\"},{\"customer_name\":\"tony stark\",\"product_name\":\"arc reactor\",\"sale_date\":\"02-mar-2025\",\"sale_id\":6,\"sale_price\":\"54985\"},{\"customer_name\":\"peter parker\",\"product_name\":\"spider-suit\",\"sale_date\":\"03-mar-2025\",\"sale_id\":7,\"sale_price\":\"1590\"},{\"customer_name\":\"bruce wayne\",\"product_name\":\"bat cape\",\"sale_date\":\"01-may-2025\",\"sale_id\":8,\"sale_price\":\"13746\"},{\"customer_name\":\"thor odinson\",\"product_name\":\"mjolnir hammer\",\"sale_date\":\"08-may-2025\",\"sale_id\":9,\"sale_price\":\"199999\"},{\"customer_name\":\"clark kent\",\"product_name\":\"red cape\",\"sale_date\":\"09-may-2025\",\"sale_id\":10,\"sale_price\":\"200\"}]}')"
+              },
+              "schemas": {
+                "input": {
+                  "input": "schema://SalesSchema"
+                },
+                "output": {
+                  "output": {
+                    "type": "json",
+                    "value": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sale\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"sale_id\": {\n            \"type\": \"number\"\n          },\n          \"sale_date\": {\n            \"type\": \"string\"\n          },\n          \"sale_price\": {\n            \"type\": \"string\"\n          },\n          \"product_name\": {\n            \"type\": \"string\"\n          },\n          \"customer_name\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}",
+                    "fe_metadata": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"sale\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"sale_id\": {\n            \"type\": \"number\"\n          },\n          \"sale_date\": {\n            \"type\": \"string\"\n          },\n          \"sale_price\": {\n            \"type\": \"string\"\n          },\n          \"product_name\": {\n            \"type\": \"string\"\n          },\n          \"customer_name\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}"
+                  }
+                }
+              },
+              "feSchemaMap": {}
+            }
+          },
+          {
+            "id": "LogEnd",
+            "name": "LogEnd",
+            "description": "Simple Log Message Activity",
+            "activity": {
+              "ref": "#log",
+              "input": {
+                "Log Level": "INFO",
+                "flowInfo": false,
+                "message": "=coerce.toString($activity[Mapper].output)",
+                "logLevel": ""
+              }
+            }
+          },
+          {
+            "id": "Return",
+            "name": "Return",
+            "description": "Simple Return Activity",
+            "activity": {
+              "ref": "#actreturn",
+              "settings": {
+                "mappings": {
+                  "code": 200,
+                  "data": "=$activity[Mapper].output"
+                }
+              }
+            }
+          }
+        ],
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjQ3LCJ5IjoxMDd9LCJMb2dTdGFydCI6eyJ4IjoxNDksInkiOjk2fSwiTWFwcGVyIjp7IngiOjMzMSwieSI6OTd9LCJMb2dFbmQiOnsieCI6NTIzLCJ5IjoxMDB9LCJSZXR1cm4iOnsieCI6NzExLCJ5Ijo5OX19",
+        "errorHandler": {
+          "tasks": [
+            {
+              "id": "LogError",
+              "name": "LogError",
+              "description": "Simple Log Message Activity",
+              "activity": {
+                "ref": "#log",
+                "input": {
+                  "Log Level": "ERROR",
+                  "flowInfo": false,
+                  "message": "=string.concat(\"FlowName:\", $flowctx[\"FlowName\"],\"activity:\", $error.activity,\"message:\", $error.message, \"data:\", $error.data)",
+                  "logLevel": ""
+                }
+              }
+            },
+            {
+              "id": "ReturnError",
+              "name": "ReturnError",
+              "description": "Simple Return Activity",
+              "activity": {
+                "ref": "#actreturn",
+                "settings": {
+                  "mappings": {
+                    "code": 500
+                  }
+                }
+              }
+            }
+          ],
+          "links": [
+            {
+              "id": 5,
+              "from": "LogError",
+              "to": "ReturnError",
+              "type": "label",
+              "label": "LogError to Return1"
+            }
+          ],
+          "fe_metadata": "eyJMb2dFcnJvciI6eyJ4IjoyOTksInkiOjk5fSwiUmV0dXJuRXJyb3IiOnsieCI6NDk0LCJ5Ijo5OH19"
+        },
+        "metadata": {
+          "input": [
+            {
+              "name": "headers",
+              "type": "object",
+              "schema": {
+                "type": "json",
+                "value": "{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}}"
+              }
+            },
+            {
+              "name": "requestURI",
+              "type": "string"
+            },
+            {
+              "name": "method",
+              "type": "string"
+            }
+          ],
+          "output": [
+            {
+              "name": "code",
+              "type": "integer"
+            },
+            {
+              "name": "data",
+              "type": "object",
+              "schema": {
+                "type": "json",
+                "value": "{\"sale\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"sale_id\":{\"type\":\"number\"},\"sale_date\":{\"type\":\"string\"},\"sale_price\":{\"type\":\"string\"},\"product_name\":{\"type\":\"string\"},\"customer_name\":{\"type\":\"string\"}}}}}"
+              }
+            }
+          ],
+          "fe_metadata": {
+            "input": "{\"type\":\"object\",\"title\":\"ReceiveHTTPMessage\",\"properties\":{\"headers\":{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]},\"requestURI\":{\"type\":\"string\",\"required\":false},\"method\":{\"type\":\"string\",\"required\":false}}}",
+            "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"code\":{\"type\":\"integer\",\"required\":false},\"data\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"sale\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"sale_id\":{\"type\":\"number\"},\"sale_date\":{\"type\":\"string\"},\"sale_price\":{\"type\":\"string\"},\"product_name\":{\"type\":\"string\"},\"customer_name\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+          }
+        },
+        "explicitReply": true
+      }
+    }
+  ],
+  "properties": [
+    {
+      "name": "EntityAPI.HTTPPort",
+      "type": "float64",
+      "value": 18080
+    }
+  ],
+  "schemas": {
+    "CustomerSchema": {
+      "type": "json",
+      "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"customer_name\": {\n            \"type\": \"string\"\n        },\n        \"customer_age\": {\n            \"type\": \"number\"\n        },\n        \"customer_street\": {\n            \"type\": \"string\"\n        },\n        \"customer_city\": {\n            \"type\": \"string\"\n        },\n        \"customer_state\": {\n            \"type\": \"string\"\n        },\n        \"customer_country\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+      "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"customer_name\": {\n            \"type\": \"string\"\n        },\n        \"customer_age\": {\n            \"type\": \"number\"\n        },\n        \"customer_street\": {\n            \"type\": \"string\"\n        },\n        \"customer_city\": {\n            \"type\": \"string\"\n        },\n        \"customer_state\": {\n            \"type\": \"string\"\n        },\n        \"customer_country\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+    },
+    "CustomersSchema": {
+      "type": "json",
+      "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"customer\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"customer_id\": {\n                        \"type\": \"number\"\n                    },\n                    \"customer_name\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_age\": {\n                        \"type\": \"number\"\n                    },\n                    \"customer_street\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_city\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_state\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_country\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+      "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"customer\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"customer_id\": {\n                        \"type\": \"number\"\n                    },\n                    \"customer_name\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_age\": {\n                        \"type\": \"number\"\n                    },\n                    \"customer_street\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_city\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_state\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_country\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
+    },
+    "ProductSchema": {
+      "type": "json",
+      "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"product_name\": {\n            \"type\": \"string\"\n        },\n        \"product_cost\": {\n            \"type\": \"string\"\n        },\n        \"product_msrp\": {\n            \"type\": \"string\"\n        },\n        \"product_quantity\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+      "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"product_name\": {\n            \"type\": \"string\"\n        },\n        \"product_cost\": {\n            \"type\": \"string\"\n        },\n        \"product_msrp\": {\n            \"type\": \"string\"\n        },\n        \"product_quantity\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+    },
+    "ProductsSchema": {
+      "type": "json",
+      "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"product\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"product_id\": {\n                        \"type\": \"number\"\n                    },\n                    \"product_name\": {\n                        \"type\": \"string\"\n                    },\n                    \"product_cost\": {\n                        \"type\": \"string\"\n                    },\n                    \"product_msrp\": {\n                        \"type\": \"string\"\n                    },\n                    \"product_quantity\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+      "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"product\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"product_id\": {\n                        \"type\": \"number\"\n                    },\n                    \"product_name\": {\n                        \"type\": \"string\"\n                    },\n                    \"product_cost\": {\n                        \"type\": \"string\"\n                    },\n                    \"product_msrp\": {\n                        \"type\": \"string\"\n                    },\n                    \"product_quantity\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
+    },
+    "SaleSchema": {
+      "type": "json",
+      "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"sale_date\": {\n            \"type\": \"string\"\n        },\n        \"sale_price\": {\n            \"type\": \"string\"\n        },\n        \"product_name\": {\n            \"type\": \"string\"\n        },\n        \"customer_name\": {\n            \"type\": \"string\"\n        }\n    }\n}",
+      "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"sale_date\": {\n            \"type\": \"string\"\n        },\n        \"sale_price\": {\n            \"type\": \"string\"\n        },\n        \"product_name\": {\n            \"type\": \"string\"\n        },\n        \"customer_name\": {\n            \"type\": \"string\"\n        }\n    }\n}"
+    },
+    "SalesSchema": {
+      "type": "json",
+      "value": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"sale\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"sale_id\": {\n                        \"type\": \"number\"\n                    },\n                    \"sale_date\": {\n                        \"type\": \"string\"\n                    },\n                    \"sale_price\": {\n                        \"type\": \"string\"\n                    },\n                    \"product_name\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_name\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}",
+      "fe_metadata": "{\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"sale\": {\n            \"type\": \"array\",\n            \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"sale_id\": {\n                        \"type\": \"number\"\n                    },\n                    \"sale_date\": {\n                        \"type\": \"string\"\n                    },\n                    \"sale_price\": {\n                        \"type\": \"string\"\n                    },\n                    \"product_name\": {\n                        \"type\": \"string\"\n                    },\n                    \"customer_name\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}"
+    }
+  },
+  "connections": {},
+  "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS90aWJjby9mbG9nby1nZW5lcmFsL3NyYy9hcHAvR2VuZXJhbCIsImlkIjoiR2VuZXJhbCIsInZlcnNpb24iOiIxLjYuNyIsInRhZyI6IjEuNi43LWIwMyIsIm5hbWUiOiJHZW5lcmFsIiwiczNsb2NhdGlvbiI6IlRpYmNvL0dlbmVyYWwiLCJpc1VzZXJFeHRlbnNpb24iOmZhbHNlfV0=",
+  "metadata": {
+    "endpoints": [
+      {
+        "protocol": "http",
+        "port": "18080",
+        "spec": {
+          "name": "CustomersProductsSalesAPI",
+          "version": "1.0.0"
+        },
+        "title": "ReceiveHTTPMessage",
+        "swagger": {
+          "swagger": "2.0",
+          "info": {
+            "title": "CustomersProductsSalesAPI",
+            "version": "1.0.0",
+            "description": "Simple REST Trigger"
+          },
+          "paths": {
+            "/customers": {
+              "get": {
+                "summary": "Get_Customers_flow",
+                "operationId": "get_customers",
+                "parameters": [],
+                "responses": {
+                  "200": {
+                    "description": "Rest Response",
+                    "schema": {
+                      "$ref": "#/definitions/schema1"
+                    }
+                  }
+                },
+                "description": "Get a list of customers."
+              }
+            },
+            "/products": {
+              "get": {
+                "summary": "Get_Products_flow",
+                "operationId": "get_products",
+                "parameters": [],
+                "responses": {
+                  "200": {
+                    "description": "Rest Response",
+                    "schema": {
+                      "$ref": "#/definitions/schema2"
+                    }
+                  }
+                },
+                "description": "Get a list of products."
+              }
+            },
+            "/sales": {
+              "get": {
+                "summary": "Get_Sales_flow",
+                "operationId": "get_sales",
+                "parameters": [],
+                "responses": {
+                  "200": {
+                    "description": "Rest Response",
+                    "schema": {
+                      "$ref": "#/definitions/schema3"
+                    }
+                  }
+                },
+                "description": "Get a list of sales."
+              }
+            }
+          },
+          "definitions": {
+            "schema1": {
+              "type": "object",
+              "properties": {
+                "customer": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "customer_id": {
+                        "type": "number"
+                      },
+                      "customer_name": {
+                        "type": "string"
+                      },
+                      "customer_age": {
+                        "type": "number"
+                      },
+                      "customer_street": {
+                        "type": "string"
+                      },
+                      "customer_city": {
+                        "type": "string"
+                      },
+                      "customer_state": {
+                        "type": "string"
+                      },
+                      "customer_country": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "schema2": {
+              "type": "object",
+              "properties": {
+                "product": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "product_id": {
+                        "type": "number"
+                      },
+                      "product_name": {
+                        "type": "string"
+                      },
+                      "product_cost": {
+                        "type": "string"
+                      },
+                      "product_msrp": {
+                        "type": "string"
+                      },
+                      "product_quantity": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "schema3": {
+              "type": "object",
+              "properties": {
+                "sale": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sale_id": {
+                        "type": "number"
+                      },
+                      "sale_date": {
+                        "type": "string"
+                      },
+                      "sale_price": {
+                        "type": "string"
+                      },
+                      "product_name": {
+                        "type": "string"
+                      },
+                      "customer_name": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "flogoVersion": "2.25.7"
+  }
+}
