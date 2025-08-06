@@ -43,11 +43,12 @@ Developer Preview** to expose **Customer 360 data** — including **customers**,
 <img width="1322" height="588" alt="Screenshot 2025-08-01 at 12 49 20 AM" src="https://github.com/user-attachments/assets/2885b657-0b45-49ab-b3e3-465894eece6d" />
 
 ## Run the application
-  - Run CustProdSaleAPI.flogo app which will start the API server and you can access these endpoints - http://localhost:18080/products, http://localhost:18080/customers, http://localhost:18080/sales
-
-  - Run Customer360MCPServer.flogo app which start FLOGO MCP Server at http://localhost:9091/mcp.
+  - Run CustProdSaleAPI.flogo app from VsCode which will start the API server and you can access these endpoints - http://localhost:18080/products, http://localhost:18080/customers, http://localhost:18080/sales
+  - Make sure to check and update the app property CustInvokeRESTServiceURL, ProdInvokeRESTServiceURL, SaleInvokeRESTServiceURL in Customer360MCPServer app to point to url where your CustProdSaleAPI flogo app is running.
+  - Run Customer360MCPServer.flogo app from VsCode which will start FLOGO MCP Server at http://localhost:9091/mcp.
   - You can configure this MCP Server url with Claude Desktop or GitHub Copilot in VS Code and send querries in natural language and get the response as shown below.
-  - As you can see, you dont need to write any specific business logic to query data which spans across different tools.
+  - You can send a query like "Show me sales for Q1 2025" or "List customer names who have purchased more than 2 products and their details" and you will get the result in AI Agent as shown below.
+  - As you can see, you dont need to write any specific business logic to query data which spans across different tools like customer, product, sales
 
 <img width="1663" height="846" alt="Screenshot 2025-08-01 at 12 43 04 AM" src="https://github.com/user-attachments/assets/7b3d6c5b-8956-4dfb-bb31-f3df865c300a" />
 
@@ -56,13 +57,15 @@ Developer Preview** to expose **Customer 360 data** — including **customers**,
 
 > **Note:** In order to run the query in Claude Desktop, you will need to configure MCP Server url in > claude_desktop_config.json like below - 
 
-> {
->  "mcpServers": {
->    "FLOGO:CustomerProductSalesData": {
->      "command": "npx",
->      "args": ["mcp-remote", "http://localhost:9091/mcp"]
->    }
->  }
-> }
+```
+ {
+  "mcpServers": {
+    "FLOGO:CustomerProductSalesData": {
+      "command": "npx",
+      "args": ["mcp-remote", "http://localhost:9091/mcp"]
+    }
+  }
+ }
+```
 
 > You would also need to install npm and mcp-remote package in order for Claude Desktop to connect to MCP server.
