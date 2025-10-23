@@ -93,6 +93,11 @@ Import Customer_Health_Monitor.flogo app in VS Code.
 **If you observe, the MCP server retrieves relevant information by calling multiple tools and combining their results to generate actionable insights**
 
 
+## 🎬 Demo Video
+
+### Complete Demo Walkthrough
+
+[![Customer Health Monitor Demo](https://github.com/tp-devhub-hackathon-2025/user-assets-hackathon/blob/main/screenshots/customer-health-monitor/arch.png)](https://youtu.be/pNZthAn1kII)
 
 
 > **Note:** In order to run the query in Claude Desktop, you will need to configure MCP Server url in > claude_desktop_config.json like below -
