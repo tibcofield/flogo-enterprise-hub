@@ -27,6 +27,7 @@ Can you collect audit records from the MFT system of the last 10 days? The outpu
 Output from Claude Desktop:
 
 ![image info](AI/images/FLOGO_MCP_MFT/Claude_auditResult.png)
+![image info](AI/images/FLOGO_MCP_MFT/Claude_AuditResult.png)
 
 
 ## Use case: Governance and Compliance
@@ -36,6 +37,7 @@ Output from Claude Desktop:
 
 
 ![image info](AI/images/FLOGO_MCP_MFT/MFT_CC_Transfers.png)
+![image info](AI/images/FLOGO_MCP_MFT/MFT_CC_transfers.png)
 
 
 ### Example : Claude Desktop
@@ -55,6 +57,7 @@ Output from Claude Desktop:
 
 
 ## Get started
+## Getting started
 
 ### Prerequisites for building/running this demonstration:
 - A running TIBCO MFT environment 
@@ -69,9 +72,16 @@ Output from Claude Desktop:
 
 #### Flogo MCP Server
 
+The MCP Server is build in [TIBCO Flogo Enterprise](https://docs.tibco.com/products/tibco-flogo-enterprise).  Download the "TIBCO Flogo Extension for Visual Studio Code Software" from the [eDelivery portal](https://www.tibco.com/downloads/11810/secure/download-11810).
 
+In the Flogo MCP Server multiple flows are defined. For each MCP - Tool definition a separate flow is specified. In this example MCP Server, there are 3 MCP Tool definitions available:
+- Transfers Tool
+- Users Tool
+- Audits Tool
 
 ![image info](AI/images/FLOGO_MCP_MFT/FLOGO_MCP1.png)
+
+The MCP-Tool definition is the actual flow definition which is responsible for collecting the requested data to service the LLM models. In the example below an impression is shown of the Audits Tool flow definition. 
 
 ![image info](AI/images/FLOGO_MCP_MFT/FLOGO_MCP2.png)
 
@@ -79,6 +89,8 @@ Output from Claude Desktop:
 #### Claude Desktop Configuration
 
 
+In the Claude Desktop configuration the Flogo MCP Server should be registered as a Local MCP Server. You will need to update the *claude_desktop_config.json* file with the following definitions.
+Navigate to: >File >Settings >Developer and edit the file accordingly.
 
 ```
 {
@@ -112,4 +124,6 @@ Navigate back to the Chat screen and click the "Search and Tools" button
 
 
 ### The materials to setup this demo is available on GitHub:  
-[Flogo MCP Server on TIBCO Managed File Transfer](https://github.com/TIBCOSoftware/flogo-enterprise-hub/blob/master/demos/ai-powered-customer-service/README.md?utm_source=chatgpt.com)
+[Flogo MCP Server on TIBCO Managed File Transfer](https://github.com/TIBCOSoftware/flogo-enterprise-hub/blob/master/demos/ai-powered-customer-service/README.md?utm_source=chatgpt.com)[Flogo MCP Server on TIBCO Managed File Transfer](https://github.com/TIBCOSoftware/flogo-enterprise-hub/blob/master/demos/ai-powered-customer-service/README.md?utm_source=chatgpt.com)
+
+
