@@ -120,6 +120,6 @@ Navigate back to the Chat screen and click the "Search and Tools" button
 
 
 ### The materials to setup this demo is available on GitHub:  
-[Flogo MCP Server on TIBCO Managed File Transfer](https://github.com/TIBCOSoftware/flogo-enterprise-hub/blob/master/demos/ai-powered-customer-service/README.md?utm_source=chatgpt.com)
+[Flogo MCP Server on TIBCO Managed File Transfer](https://github.com/TIBCOSoftware/flogo-enterprise-hub/blob/master/demos/flogo_mcp_mft/README.md)
 
 
