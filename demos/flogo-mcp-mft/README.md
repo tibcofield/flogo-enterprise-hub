@@ -14,7 +14,7 @@ This demo showcases how Flogo MCP Connector can turn a TIBCO Managed File Transf
  **In this demonstration, we build a **Managed File Transfer B2B AI agent** using the Flogo MCP Connector. It illustrates how the three MCP primitives — **Resources**, **Tools**, and **Prompts** — work together to connect AI models (like Claude or N8N with OpenAI model) with enterprise data from the Managed File Transfer system in a controlled, compliant, and context-aware way.
 
 
-![image info](AI/images/FLOGO_MCP_MFT/MCP-Server-for-Flogo-Overview.png)
+![image info](/images/FLOGO_MCP_MFT/MCP-Server-for-Flogo-Overview.png)
 
 ## Get started
 
@@ -38,7 +38,7 @@ In the Flogo MCP Server multiple flows are defined. For each MCP - Tool definiti
 - Users Tool
 - Audits Tool
 
-![image info](AI/images/FLOGO_MCP_MFT/FLOGO_MCP1.png)
+![image info](images/FLOGO_MCP_MFT/FLOGO_MCP1.png)
 
 The MCP-Tool definition is the actual flow definition which is responsible for collecting the requested data to service the LLM models. In the example below an impression is shown of the Audits Tool flow definition. 
 
