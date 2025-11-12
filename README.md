@@ -1,12 +1,12 @@
-# **Hub for TIBCO Flogo® Enterprise**
+# **Hub for TIBCO Flogo®**
 
-Welcome to the **Hub for TIBCO Flogo® Enterprise** — your community-driven space for sharing FLOGO samples, demos, and custom contributions for TIBCO Flogo® Enterprise.
+Welcome to the **Hub for TIBCO Flogo®** — your community-driven space for sharing FLOGO samples, demos, and custom contributions for TIBCO Flogo®.
 
-TIBCO Flogo® Enterprise is a commercially supported offering that helps you build ultralight microservices for any application development use case — whether on-premises, in private or public clouds (including services like AWS Lambda), or on edge devices.
+TIBCO Flogo® (formerly known as TIBCO Flogo® Enterprise) enables AI orchestration and intelligent automation through a visual flow designer integrated into Visual Studio Code. Built on a high-performance Go (Golang) engine, it delivers superior runtime efficiency, an ultra-light memory footprint, fast startup, and low-latency processing across edge, cloud, serverless, and on-premises environments. With its AI-ready architecture and powerful set of connectors, Flogo® transforms enterprise data into intelligent, event-driven, AI-ready workflows.
 
-For more information, please refer [documentation](https://docs.tibco.com/products/tibco-flogo-enterprise-latest)
+For more information, please refer [documentation](https://docs.tibco.com/products/tibco-flogo-latest)
 
-If you have purchased commercial support for TIBCO Flogo® Enterprise, please create a Service Request using your TIBCO Support credentials at [https://support.tibco.com/](https://support.tibco.com/).
+If you have purchased commercial support for TIBCO Flogo®, please create a Service Request using your TIBCO Support credentials at [https://support.tibco.com/](https://support.tibco.com/).
 
 ---
 
