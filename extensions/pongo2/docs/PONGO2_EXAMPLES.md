@@ -948,7 +948,7 @@ You are a travel itinerary generator for European tourists.
 **🎭 Cultural Highlights:**
 
 
-**�️ Weather Advice:**
+**🌤️ Weather Advice:**
 
 
 **🎯 Must-Do Activities:**
