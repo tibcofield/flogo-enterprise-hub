@@ -33,7 +33,7 @@ Your role is {{ role }}
 {% elif experience > 0 %} and well done on your {{ experience }} years of experience!{% endif %}
 {% if experience == 10 or experience == 15 or experience == 20 %} We truly appreciate your significant contribution to the industry.{% endif %}
 ```
-** JSON Schema **
+*JSON Schema*
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
