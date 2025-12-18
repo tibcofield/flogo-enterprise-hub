@@ -1,4 +1,4 @@
-module github.com/kulbhushanbhalerao/pongo2
+module github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/pongo2
 
 go 1.21
 
