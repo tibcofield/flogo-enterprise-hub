@@ -7,7 +7,7 @@ layout: default
 
 **The world's first enterprise workflow platform with native AI prompt engineering capabilities**
 
-Transform how your organization integr## 💼 Business Value & ROI
+## 💼 Business Value & ROI
 
 **Immediate Economic Benefits:**
 - **Development Speed**: 50-60% faster AI integration development
