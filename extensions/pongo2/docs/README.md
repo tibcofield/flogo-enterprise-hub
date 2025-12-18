@@ -121,7 +121,7 @@ github.com/kulbhushanbhalerao/flogo-extensions/pongo2
    ```bash
    ./generate_flogo_params.sh "Hello {{ name }}! Please analyze {{ data }} and provide results in {{ format }} format."
    ```
-   - Use generated json schema from variables inside the templates. Note: For now use flat json structure in case it generates nestes structure 
+   - Use generated json schema from variables inside the templates. Note: For now use flat json structure in case it generates nested structure 
    - Individual fields are created for each variable detected in your template
    - Each field can be mapped to different data sources in your flow
    - Schema-based approach ensures proper field generation in Flogo Web UI
