@@ -116,7 +116,7 @@ github.com/kulbhushanbhalerao/flogo-extensions/pongo2
    - Example: 
     `"Hello {{ name }}! Please analyze {{ data }} and provide results in {{ format }} format."`
 
-2. **JSON Schema generaration** (object): 
+2. **JSON Schema generation** (object): 
    - Use script: /utils-pongo2-json/generate_flogo_params.sh and pass the template as a string in double quotes 
    ```bash
    ./generate_flogo_params.sh "Hello {{ name }}! Please analyze {{ data }} and provide results in {{ format }} format."
