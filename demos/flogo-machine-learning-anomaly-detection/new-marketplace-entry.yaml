@@ -1,8 +1,8 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: "flogo-ml-if-abnormally-detection-sample"
-  title: "Flogo ML IF Abnormally Detection Sample"
+  name: "flogo-ml-if-anomaly-detection-sample"
+  title: "Flogo ML IF Anomaly Detection Sample"
   description: "This sample uses TIBCO Flogo in tandem with Python Scikit-learn open-source machine learning library to demonstrate Artificial Intelligence Machine Learning (AI-ML) in a real-time eventing scenario deployable into the TIBCO Platform."
   backstage.io/techdocs-ref: dir:.
   tibco.developer.hub/marketplace:
@@ -45,9 +45,9 @@ spec:
         description:
           type: 'null' # Needs to be quoted
           description: |
-            ## Install  Flogo ML IF Abnormally Detection Sample into your TIBCO Developer Hub
+            ## Install  Flogo ML IF Anomaly Detection Sample into your TIBCO Developer Hub
             
-            **ID:** flogo-ml-if-abnormally-detection-sample
+            **ID:** flogo-ml-if-anomaly-detection-sample
             
             **Description:** This sample uses TIBCO Flogo in tandem with Python Scikit-learn open-source machine learning library to demonstrate Artificial Intelligence Machine Learning (AI-ML) in a real-time eventing scenario deployable into the TIBCO Platform.
           
@@ -80,11 +80,11 @@ spec:
         icon: catalog
         entityRef: ${{ steps.registerItem.output.entityRef }}
       - icon: catalog
-        title: Open Flogo ML IF Abnormally Detection Sample
-        url: /catalog/default/component/flogo-ml-if-abnormally-detection-sample
+        title: Open Flogo ML IF Anomaly Detection Sample
+        url: /catalog/default/component/flogo-ml-if-anomaly-detection-sample
       - icon: docs
-        title: Documentation For Flogo ML IF Abnormally Detection
-        url: /docs/default/component/flogo-ml-if-abnormally-detection-sample
+        title: Documentation For Flogo ML IF Anomaly Detection
+        url: /docs/default/component/flogo-ml-if-anomaly-detection-sample
       - icon: kind:component
         title: Clone with VSCode
         url: vscode://vscode.git/clone?url=https://github.com/jchong-tp-devhub/flogo-ml-if

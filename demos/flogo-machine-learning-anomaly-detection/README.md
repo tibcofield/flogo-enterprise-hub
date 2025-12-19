@@ -103,7 +103,7 @@ The sample can be run from within Visual Studio Code. The follow are the steps t
         ````
 2. Open the MachineTemperature.flogo, select a Flogo Runtime and click Run.
 
-3. You will see print out in the Flogo application and the Python application which shows first the few-shot training being executed followed by abnormally detection reporting temperature which are normal and temperature which are not.
+3. You will see print out in the Flogo application and the Python application which shows first the few-shot training being executed followed by anomaly detection reporting temperature which are normal and temperature which are not.
 
 <a name="platform" />
 
@@ -137,6 +137,6 @@ This section are some of the questions that are asked about this sample.
 
 ## References
 - TIBCO Platform Documentation: https://docs.tibco.com/pub/platform-cp/1.10.0/doc/html/Default.htm
-- TIBCO Flogo Enterprise Documentation: https://docs.tibco.com/pub/flogo/2.25.8/doc/html/Default.htm
+- TIBCO Flogo Enterprise Documentation: https://docs.tibco.com/products/tibco-flogo-latest
 - skikit-learn: https://scikit-learn.org/stable/index.html
 - skikit-learn IsolationForest API Reference: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html

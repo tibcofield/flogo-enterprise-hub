@@ -1,4 +1,4 @@
-Flogo Machine Learning Isolation Forest Abnormally Detection
+Flogo Machine Learning Isolation Forest Anomaly Detection
 
 This sample uses TIBCO Flogo in tandem with Python Scikit-learn open-source machine learning library to demonstrate Artificial Intelligence Machine Learning (AI-ML) in a real-time eventing scenario deployable into the TIBCO Platform. 
 
