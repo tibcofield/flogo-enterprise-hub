@@ -1,4 +1,4 @@
-# Flogo Docker Examples
+# Flogo Apps Docker File Examples
 
 These are examples of running Flogo applications as Docker images in production mode.
 
@@ -83,7 +83,7 @@ This approach allows you to manage license files externally without embedding th
 
 ### AMD64 - Standard Flogo Apps (distros/)
 
-| Build Distro | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2/2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
+| **Builder Distro** ↓ / **Runtime Distro** → | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2/2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Debian/Ubuntu** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Alpine** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -97,13 +97,15 @@ This approach allows you to manage license files externally without embedding th
 
 ### ARM64 - Standard Flogo Apps
 
-| Build Distro | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
+| **Builder Distro** ↓ / **Runtime Distro** → | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Debian/Ubuntu** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
+> **Note:** Flogo apps with EMS connectors, IBM MQ, and SAP Solutions are not supported for ARM64 due to unavailability of supplemental libraries for ARM64 architecture.
+
 ### EMS Connector Apps
 
-| Build Distro | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
+| **Builder Distro** ↓ / **Runtime Distro** → | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Debian/Ubuntu** | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Alpine** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -116,7 +118,7 @@ This approach allows you to manage license files externally without embedding th
 
 ### Oracle Connector Apps
 
-| Build Distro | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
+| **Builder Distro** ↓ / **Runtime Distro** → | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Debian/Ubuntu** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | **Alpine** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -129,7 +131,7 @@ This approach allows you to manage license files externally without embedding th
 
 ### SAP Solutions Apps
 
-| Build Distro | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
+| **Builder Distro** ↓ / **Runtime Distro** → | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Debian/Ubuntu** | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | **Alpine** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -142,7 +144,7 @@ This approach allows you to manage license files externally without embedding th
 
 ### IBM MQ Connector Apps
 
-| Build Distro | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
+| **Builder Distro** ↓ / **Runtime Distro** → | Debian/Ubuntu | Alpine | CentOS | Fedora | Amazon Linux 2023 | Amazon Graviton | GCP Container OS | Distroless | RedHat UBI |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Debian/Ubuntu** | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | **Alpine** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
