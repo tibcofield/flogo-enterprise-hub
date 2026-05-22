@@ -55,14 +55,14 @@ the API.
 Unit tests for input validation run with no credentials:
 
 ```bash
-go test ./activity/imageCreate/
+go test ./activity/ImageCreate/
 ```
 
 Integration tests require a real key. Copy `.env.example` to `.env`, fill in
 `OPEN_AI_API_KEY`, set `RUN_INTEGRATION=1`, then:
 
 ```bash
-go test ./activity/imageCreate/ -run Integration -v
+go test ./activity/ImageCreate/ -run Integration -v
 ```
 
 ## Parameter dependencies

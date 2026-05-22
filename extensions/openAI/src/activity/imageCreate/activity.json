@@ -60,7 +60,7 @@
     {
       "name": "numberOfImages",
       "type": "integer",
-      "required": false,
+      "required": true,
       "display": {
         "name": "Number of Images",
         "description": "How many images to generate. Allowed range 1-10 for dall-e-2 and gpt-image*. dall-e-3 only supports 1."
