@@ -40,17 +40,182 @@ var ImageCreateActivityContribution = (function (_super) {
                     return 1;
                 }
             }
+            if (fieldName === "size") {
+                var model = String(context.getField("model").value || "");
+                var family = (!model || model === "dall-e-2") ? "dall-e-2" :
+                    (model === "dall-e-3") ? "dall-e-3" :
+                        (model.indexOf("gpt-image-2") === 0) ? "gpt-image-2" :
+                            (model.indexOf("gpt-image") === 0) ? "gpt-image" : "";
+                switch (family) {
+                    case "dall-e-2":
+                        return ["", "256x256", "512x512", "1024x1024"];
+                    case "dall-e-3":
+                        return ["", "1024x1024", "1024x1792", "1792x1024"];
+                    case "gpt-image":
+                    case "gpt-image-2":
+                        return ["", "1024x1024", "1024x1536", "1536x1024", "auto"];
+                    default:
+                        return [""];
+                }
+            }
             return null;
+        };
+        _this.visible = function (fieldName, context) {
+            if (fieldName === "style") {
+                var model = String(context.getField("model").value || "");
+                return model === "dall-e-3";
+            }
+            return true;
         };
         _this.validate = function (fieldName, context) {
             var vResult = wi_contrib_1.ValidationResult.newValidationResult();
+            var modelFamily = function (m) {
+                if (!m || m === "dall-e-2")
+                    return "dall-e-2";
+                if (m === "dall-e-3")
+                    return "dall-e-3";
+                if (m.indexOf("gpt-image-2") === 0)
+                    return "gpt-image-2";
+                if (m.indexOf("gpt-image") === 0)
+                    return "gpt-image";
+                return "";
+            };
+            var model = String(context.getField("model").value || "");
+            var family = modelFamily(model);
+            var val = function (n) {
+                var f = context.getField(n);
+                return f && f.value !== null && f.value !== undefined ? String(f.value) : "";
+            };
             if (fieldName === "numberOfImages") {
-                var modelField = context.getField("model");
-                var nField = context.getField("numberOfImages");
-                if (modelField && modelField.value === "gpt-image-1"
-                    && nField && nField.value !== null && nField.value !== undefined
-                    && Number(nField.value) !== 1) {
-                    return vResult.setError("OPENAI-IMG-CREATE-1001", "When model is 'gpt-image-1', Number of Images must be 1.");
+                var raw = context.getField("numberOfImages").value;
+                var n = Number(raw);
+                if (raw !== null && raw !== undefined && String(raw) !== "") {
+                    if (!Number.isFinite(n) || n < 1 || n > 10) {
+                        return vResult.setError("OPENAI-IMG-CREATE-1001", "Number of Images must be between 1 and 10.");
+                    }
+                    if (family === "dall-e-3" && n !== 1) {
+                        return vResult.setError("OPENAI-IMG-CREATE-1002", "When model is 'dall-e-3', Number of Images must be 1.");
+                    }
+                }
+            }
+            if (fieldName === "size") {
+                var size = val("size");
+                if (size !== "") {
+                    var dalle2 = ["256x256", "512x512", "1024x1024"];
+                    var dalle3 = ["1024x1024", "1024x1792", "1792x1024"];
+                    var gptStd = ["1024x1024", "1024x1536", "1536x1024", "auto"];
+                    if (family === "dall-e-2" && dalle2.indexOf(size) < 0) {
+                        return vResult.setError("OPENAI-IMG-CREATE-1010", "For 'dall-e-2', Size must be one of: " + dalle2.join(", ") + ".");
+                    }
+                    if (family === "dall-e-3" && dalle3.indexOf(size) < 0) {
+                        return vResult.setError("OPENAI-IMG-CREATE-1011", "For 'dall-e-3', Size must be one of: " + dalle3.join(", ") + ".");
+                    }
+                    if (family === "gpt-image" && gptStd.indexOf(size) < 0) {
+                        return vResult.setError("OPENAI-IMG-CREATE-1012", "For gpt-image models, Size must be one of: " + gptStd.join(", ") + ".");
+                    }
+                    if (family === "gpt-image-2") {
+                        if (gptStd.indexOf(size) < 0) {
+                            var m = /^(\d+)x(\d+)$/.exec(size);
+                            if (!m) {
+                                return vResult.setError("OPENAI-IMG-CREATE-1013", "Size must be a standard preset or an arbitrary WxH value.");
+                            }
+                            var w = parseInt(m[1], 10);
+                            var h = parseInt(m[2], 10);
+                            if (w % 16 !== 0 || h % 16 !== 0) {
+                                return vResult.setError("OPENAI-IMG-CREATE-1014", "For 'gpt-image-2', custom width and height must be multiples of 16.");
+                            }
+                            if (w > 3840 || h > 2160) {
+                                return vResult.setError("OPENAI-IMG-CREATE-1015", "For 'gpt-image-2', custom size must not exceed 3840x2160.");
+                            }
+                            var ar = w / h;
+                            if (ar < 1 / 3 || ar > 3) {
+                                return vResult.setError("OPENAI-IMG-CREATE-1016", "For 'gpt-image-2', custom aspect ratio must be between 1:3 and 3:1.");
+                            }
+                        }
+                    }
+                }
+            }
+            if (fieldName === "quality") {
+                var q = val("quality");
+                if (q !== "") {
+                    var dalle2 = ["standard", "auto"];
+                    var dalle3 = ["standard", "hd", "auto"];
+                    var gpt = ["low", "medium", "high", "auto"];
+                    if (family === "dall-e-2" && dalle2.indexOf(q) < 0) {
+                        return vResult.setError("OPENAI-IMG-CREATE-1020", "For 'dall-e-2', Quality must be empty, 'standard' or 'auto'.");
+                    }
+                    if (family === "dall-e-3" && dalle3.indexOf(q) < 0) {
+                        return vResult.setError("OPENAI-IMG-CREATE-1021", "For 'dall-e-3', Quality must be one of: " + dalle3.join(", ") + ".");
+                    }
+                    if ((family === "gpt-image" || family === "gpt-image-2") && gpt.indexOf(q) < 0) {
+                        return vResult.setError("OPENAI-IMG-CREATE-1022", "For gpt-image models, Quality must be one of: " + gpt.join(", ") + ".");
+                    }
+                }
+            }
+            if (fieldName === "style") {
+                var s = val("style");
+                if (s !== "" && family !== "dall-e-3") {
+                    return vResult.setError("OPENAI-IMG-CREATE-1030", "Style is only supported by 'dall-e-3'.");
+                }
+            }
+            if (fieldName === "responseFormat") {
+                var rf = val("responseFormat");
+                var of = val("outputFormat");
+                if (rf !== "") {
+                    if (family !== "dall-e-2" && family !== "dall-e-3") {
+                        return vResult.setError("OPENAI-IMG-CREATE-1040", "Response Format is only supported by 'dall-e-2' and 'dall-e-3'.");
+                    }
+                    if (of !== "") {
+                        return vResult.setError("OPENAI-IMG-CREATE-1041", "Response Format and Output Format are mutually exclusive.");
+                    }
+                }
+            }
+            if (fieldName === "outputFormat") {
+                var of = val("outputFormat");
+                var rf = val("responseFormat");
+                if (of !== "") {
+                    if (family !== "gpt-image" && family !== "gpt-image-2") {
+                        return vResult.setError("OPENAI-IMG-CREATE-1050", "Output Format is only supported by gpt-image models.");
+                    }
+                    if (rf !== "") {
+                        return vResult.setError("OPENAI-IMG-CREATE-1051", "Output Format and Response Format are mutually exclusive.");
+                    }
+                }
+            }
+            if (fieldName === "background") {
+                var bg = val("background");
+                var of = val("outputFormat");
+                if (bg !== "") {
+                    if (family !== "gpt-image" && family !== "gpt-image-2") {
+                        return vResult.setError("OPENAI-IMG-CREATE-1060", "Background is only supported by gpt-image models.");
+                    }
+                    if (bg === "transparent" && of !== "" && of !== "png" && of !== "webp") {
+                        return vResult.setError("OPENAI-IMG-CREATE-1061", "Background 'transparent' requires Output Format 'png' or 'webp' (or empty).");
+                    }
+                }
+            }
+            if (fieldName === "outputCompression") {
+                var raw = context.getField("outputCompression").value;
+                if (raw !== null && raw !== undefined && String(raw) !== "") {
+                    var n = Number(raw);
+                    if (n !== 0) {
+                        if (family !== "gpt-image" && family !== "gpt-image-2") {
+                            return vResult.setError("OPENAI-IMG-CREATE-1070", "Output Compression is only supported by gpt-image models.");
+                        }
+                        if (!Number.isFinite(n) || n < 1 || n > 100) {
+                            return vResult.setError("OPENAI-IMG-CREATE-1071", "Output Compression must be between 1 and 100.");
+                        }
+                        var of = val("outputFormat");
+                        if (of !== "" && of !== "webp" && of !== "jpeg") {
+                            return vResult.setError("OPENAI-IMG-CREATE-1072", "Output Compression only applies when Output Format is 'webp' or 'jpeg'.");
+                        }
+                    }
+                }
+            }
+            if (fieldName === "moderation") {
+                var md = val("moderation");
+                if (md !== "" && family !== "gpt-image" && family !== "gpt-image-2") {
+                    return vResult.setError("OPENAI-IMG-CREATE-1080", "Moderation is only supported by gpt-image models.");
                 }
             }
             return null;
