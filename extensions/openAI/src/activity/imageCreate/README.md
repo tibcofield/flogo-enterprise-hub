@@ -61,7 +61,7 @@ go test ./activity/imageCreate/
 ```
 
 Integration tests require a real key. Copy `.env.example` to `.env`, fill in
-`OPEN_AI_API_KEY`, set `RUN_INTEGRATION=1`, then:
+`OPENAI_API_KEY`, set `RUN_INTEGRATION=1`, then:
 
 ```bash
 go test ./activity/imageCreate/ -run Integration -v
