@@ -1,4 +1,4 @@
-package ImageCreate
+package imageCreate
 
 /*
 * Copyright © 2023 - 2026. Cloud Software Group, Inc.

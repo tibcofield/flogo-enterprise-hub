@@ -1,4 +1,4 @@
-package ImageCreate
+package imageCreate
 
 /*
 * Copyright © 2023 - 2026. Cloud Software Group, Inc.
@@ -75,13 +75,15 @@ const (
 
 func modelFamily(model string) string {
 	switch {
-	case model == "" || model == "dall-e-2":
+	case model == "dall-e-2":
 		return familyDallE2
 	case model == "dall-e-3":
 		return familyDallE3
 	case strings.HasPrefix(model, "gpt-image-2"):
 		return familyGPTImage2
-	case strings.HasPrefix(model, "gpt-image"):
+	// OpenAI's /v1/images/generations endpoint now defaults to gpt-image-1
+	// when no model is specified, so treat empty the same as gpt-image.
+	case model == "" || strings.HasPrefix(model, "gpt-image"):
 		return familyGPTImage
 	default:
 		return ""
@@ -293,7 +295,13 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		params.Style = openai.ImageGenerateParamsStyle(s.Style)
 	}
 	if s.ResponseFormat != "" {
-		params.ResponseFormat = openai.ImageGenerateParamsResponseFormat(s.ResponseFormat)
+		switch s.ResponseFormat {
+		case "url":
+			params.ResponseFormat = openai.ImageGenerateParamsResponseFormatURL
+		case "b64_json":
+			params.ResponseFormat = openai.ImageGenerateParamsResponseFormatB64JSON
+		}
+
 	}
 	if s.OutputFormat != "" {
 		params.OutputFormat = openai.ImageGenerateParamsOutputFormat(s.OutputFormat)
