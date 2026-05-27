@@ -226,7 +226,7 @@
                 "timeoutSeconds": 300
               },
               "input": {
-                "filename": "/home/tibco/projects/flogoRag/flogo-enterprise-hub/extensions/openAI/src/activity/fileUpload/testdata/TIB-bwce_6.12_concepts.pdf",
+                "filename": "./testdata/TIB-bwce_6.12_concepts.pdf",
                 "vectorStoreID": "=$activity[CreateVectorStore].id"
               }
             }

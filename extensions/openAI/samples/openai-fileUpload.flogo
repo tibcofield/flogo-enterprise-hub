@@ -2,14 +2,12 @@
   "imports": [
     "github.com/project-flogo/flow",
     "github.com/project-flogo/contrib/activity/noop",
-    "github.com/tibco/flogo-general/src/app/General/activity/sleep",
     "github.com/tibco/flogo-general/src/app/General/activity/mapper",
-    "github.com/tibco/flogo-general/src/app/General/activity/log",
     "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/fileUpload",
+    "github.com/tibco/flogo-general/src/app/General/activity/log",
     "github.com/project-flogo/contrib/activity/actreturn",
     "github.com/tibco/flogo-general/src/app/General/trigger/startuphook",
     "github.com/project-flogo/contrib/function/array",
-    "github.com/project-flogo/contrib/function/coerce",
     "github.com/project-flogo/contrib/function/string"
   ],
   "name": "openaiVectorStore-openAI",
@@ -49,40 +47,26 @@
           {
             "id": 1,
             "from": "StartActivity",
-            "to": "SleepToStartDebug",
+            "to": "Mapper",
             "type": "label",
-            "label": "StartActivity to Sleep"
+            "label": "StartActivity to Mapper"
           },
           {
             "id": 2,
-            "from": "SleepToStartDebug",
-            "to": "Mapper",
+            "from": "Mapper",
+            "to": "UploadFile",
             "type": "label",
-            "label": "Sleep to Mapper"
+            "label": "Mapper to UploadFile"
           },
           {
             "id": 3,
-            "from": "Mapper",
-            "to": "LogMessage",
-            "type": "label",
-            "label": "Mapper to LogMessage"
-          },
-          {
-            "id": 4,
-            "from": "LogMessage",
-            "to": "UploadFile",
-            "type": "label",
-            "label": "LogMessage to UploadFile"
-          },
-          {
-            "id": 5,
             "from": "UploadFile",
             "to": "LogOutput",
             "type": "label",
             "label": "UploadFile to LogMessage1"
           },
           {
-            "id": 6,
+            "id": 4,
             "from": "LogOutput",
             "to": "Return",
             "type": "label",
@@ -99,18 +83,6 @@
             }
           },
           {
-            "id": "SleepToStartDebug",
-            "name": "SleepToStartDebug",
-            "description": "Simple sleep Activity",
-            "activity": {
-              "ref": "#sleep",
-              "input": {
-                "IntervalTypeSetting": "Second",
-                "IntervalSetting": 10
-              }
-            }
-          },
-          {
             "id": "Mapper",
             "name": "Mapper",
             "description": "Mapper Activity",
@@ -122,18 +94,18 @@
                     "attributes": [
                       {
                         "key": "DocGroup",
-                        "value": "BusinessWorks"
+                        "value": "UserGuide"
                       },
                       {
                         "key": "DocType",
-                        "value": "Concepts Guide"
+                        "value": "Markdown"
                       },
                       {
                         "key": "Download URL",
-                        "value": "https://docs.tibco.com/pub/activematrix_businessworks/6.12.0/doc/pdf/TIB_bwce_6.12.0_installation.pdf?id=15"
+                        "value": "link"
                       }
                     ],
-                    "filename": "extensions/openAI/src/activity/uploadFile/testdata/TIB-bwce_6.12_concepts.pdf"
+                    "filename": "flogo-enterprise-hub/extensions/openAI/testdata/AL-243-342_Operating_Guide.md"
                   }
                 }
               },
@@ -141,8 +113,8 @@
                 "input": {
                   "input": {
                     "type": "json",
-                    "value": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"File with Attributes\",\n  \"description\": \"A schema for a file with a name and a list of key-value attributes.\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"filename\": {\n      \"description\": \"The name of the file.\",\n      \"type\": \"string\"\n    },\n    \"attributes\": {\n      \"description\": \"A list of key-value pairs associated with the file.\",\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"key\": {\n            \"description\": \"The attribute's key or name.\",\n            \"type\": \"string\"\n          },\n          \"value\": {\n            \"description\": \"The attribute's value.\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"key\",\n          \"value\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"filename\",\n    \"attributes\"\n  ]\n}",
-                    "fe_metadata": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"File with Attributes\",\n  \"description\": \"A schema for a file with a name and a list of key-value attributes.\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"filename\": {\n      \"description\": \"The name of the file.\",\n      \"type\": \"string\"\n    },\n    \"attributes\": {\n      \"description\": \"A list of key-value pairs associated with the file.\",\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"key\": {\n            \"description\": \"The attribute's key or name.\",\n            \"type\": \"string\"\n          },\n          \"value\": {\n            \"description\": \"The attribute's value.\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"key\",\n          \"value\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"filename\",\n    \"attributes\"\n  ]\n}"
+                    "value": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"File with Attributes\",\n  \"description\": \"A schema for a file with a name and a list of key-value attributes.\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"filename\": {\n      \"description\": \"The name of the file.\",\n      \"type\": \"string\"\n    },\n    \"attributes\": {\n      \"description\": \"A list of key-value pairs associated with the file.\",\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"key\": {\n            \"description\": \"The attribute's key or name.\",\n            \"type\": \"string\"\n          },\n          \"value\": {\n            \"description\": \"The attribute's value.\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"key\",\n          \"value\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"filename\",\n    \"attributes\"\n  ]\n}   ",
+                    "fe_metadata": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"File with Attributes\",\n  \"description\": \"A schema for a file with a name and a list of key-value attributes.\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"filename\": {\n      \"description\": \"The name of the file.\",\n      \"type\": \"string\"\n    },\n    \"attributes\": {\n      \"description\": \"A list of key-value pairs associated with the file.\",\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"key\": {\n            \"description\": \"The attribute's key or name.\",\n            \"type\": \"string\"\n          },\n          \"value\": {\n            \"description\": \"The attribute's value.\",\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"key\",\n          \"value\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"filename\",\n    \"attributes\"\n  ]\n}   "
                   }
                 },
                 "output": {
@@ -154,20 +126,6 @@
                 }
               },
               "feSchemaMap": {}
-            }
-          },
-          {
-            "id": "LogMessage",
-            "name": "LogMessage",
-            "description": "Simple Log Message Activity",
-            "activity": {
-              "ref": "#log",
-              "input": {
-                "Log Level": "INFO",
-                "flowInfo": false,
-                "message": "=coerce.toString($activity[Mapper].output.attributes)",
-                "logLevel": ""
-              }
             }
           },
           {
@@ -226,7 +184,7 @@
             }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUsInkiOjkzfSwiU2xlZXBUb1N0YXJ0RGVidWciOnsieCI6NzYsInkiOjIxM30sIk1hcHBlciI6eyJ4IjoyMjUsInkiOjkxfSwiTG9nTWVzc2FnZSI6eyJ4Ijo0MDgsInkiOjkzfSwiVXBsb2FkRmlsZSI6eyJ4Ijo1OTQsInkiOjk0fSwiTG9nT3V0cHV0Ijp7IngiOjc4MSwieSI6OTR9LCJSZXR1cm4iOnsieCI6OTYxLCJ5Ijo5MX19",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUsInkiOjkzfSwiTWFwcGVyIjp7IngiOjE4NiwieSI6ODl9LCJVcGxvYWRGaWxlIjp7IngiOjQ1NiwieSI6OTN9LCJMb2dPdXRwdXQiOnsieCI6NzM5LCJ5Ijo5N30sIlJldHVybiI6eyJ4IjoxMzAyLCJ5Ijo5OH19",
         "metadata": {
           "input": [],
           "output": [],

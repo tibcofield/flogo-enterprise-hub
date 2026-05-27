@@ -2,8 +2,7 @@
   "imports": [
     "github.com/project-flogo/flow",
     "github.com/project-flogo/contrib/activity/noop",
-    "github.com/tibco/flogo-general/src/app/General/activity/sleep",
-    "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/vectorStoreDelete",
+    "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/vectorSearch",
     "github.com/tibco/flogo-general/src/app/General/activity/log",
     "github.com/project-flogo/contrib/activity/actreturn",
     "github.com/tibco/flogo-general/src/app/General/trigger/startuphook",
@@ -29,44 +28,47 @@
           "action": {
             "ref": "github.com/project-flogo/flow",
             "settings": {
-              "flowURI": "res://flow:Vector_Store_delete"
+              "flowURI": "res://flow:Vectorstore_search"
             }
           },
-          "name": "Vector_Store_delete"
+          "name": "Vectorstore_search"
         }
       ]
     }
   ],
   "resources": [
     {
-      "id": "flow:Vector_Store_delete",
+      "id": "flow:Vectorstore_search",
       "data": {
-        "name": "Vector Store delete",
+        "note": {
+          "author": {
+            "name": "VS code user",
+            "userId": "vscode"
+          },
+          "content": "prerequisit:\n- OpenAI vestor store with document attached (lawnmower).",
+          "createAt": 1779882188955,
+          "lastUpdatedAt": 1779882188955,
+          "title": "Flow Note"
+        },
+        "name": "Vectorstore search",
         "description": "",
         "links": [
           {
             "id": 1,
             "from": "StartActivity",
-            "to": "SleepForDebug",
+            "to": "VectorSearch",
             "type": "label",
-            "label": "StartActivity to Sleep"
+            "label": "StartActivity to VectorSearch"
           },
           {
             "id": 2,
-            "from": "SleepForDebug",
-            "to": "DeleteVectorStore",
+            "from": "VectorSearch",
+            "to": "LogMessage",
             "type": "label",
-            "label": "SleepForDebug to DeleteVectorStore"
+            "label": "VectorSearch to LogMessage"
           },
           {
             "id": 3,
-            "from": "DeleteVectorStore",
-            "to": "LogMessage",
-            "type": "label",
-            "label": "DeleteVectorStore to LogMessage"
-          },
-          {
-            "id": 4,
             "from": "LogMessage",
             "to": "Return",
             "type": "label",
@@ -83,21 +85,9 @@
             }
           },
           {
-            "id": "SleepForDebug",
-            "name": "SleepForDebug",
-            "description": "Simple sleep Activity",
-            "activity": {
-              "ref": "#sleep",
-              "input": {
-                "IntervalTypeSetting": "Millisecond",
-                "IntervalSetting": 10
-              }
-            }
-          },
-          {
-            "id": "DeleteVectorStore",
-            "name": "DeleteVectorStore",
-            "description": "This activity deletes a vector store from OpenAI",
+            "id": "VectorSearch",
+            "name": "VectorSearch",
+            "description": "This activity searches a vector store for relevant information based on a query",
             "settings": {
               "retryOnError": {
                 "count": 0,
@@ -105,29 +95,45 @@
               }
             },
             "activity": {
-              "ref": "#vectorStoreDelete",
+              "ref": "#vectorSearch",
               "settings": {
                 "endPointURL": "=$property[\"OPENAI_API_ENDPOINT_URL\"]",
                 "apiKey": "=$property[\"OPENAI_API_KEY\"]"
               },
               "input": {
-                "vectorStoreId": "vs_69f1e95b9010819180f4bc2cdf7f89a1"
+                "vectorStoreID": "=$property[\"VECTORSTORE_ID\"]",
+                "searchString": "what versions of lawnmowers are there",
+                "maxNumberOfResults": 3,
+                "rewriteQuery": false,
+                "ranker": "auto"
               },
-              "output": {
-                "deleted": false
-              }
+              "schemas": {
+                "output": {
+                  "searchResultRows": {
+                    "type": "json",
+                    "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"attributes\":{\"type\":\"object\",\"properties\":{}},\"content\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"text\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"}}}},\"file_id\":{\"type\":\"string\"},\"filename\":{\"type\":\"string\"},\"score\":{\"type\":\"number\"}},\"required\":[\"attributes\",\"content\",\"file_id\",\"filename\",\"score\"]}}",
+                    "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"attributes\":{\"type\":\"object\",\"properties\":{}},\"content\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"text\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"}}}},\"file_id\":{\"type\":\"string\"},\"filename\":{\"type\":\"string\"},\"score\":{\"type\":\"number\"}},\"required\":[\"attributes\",\"content\",\"file_id\",\"filename\",\"score\"]}}"
+                  }
+                }
+              },
+              "feSchemaMap": {}
             }
           },
           {
             "id": "LogMessage",
             "name": "LogMessage",
             "description": "Simple Log Message Activity",
+            "type": "iterator",
+            "settings": {
+              "iterate": "=$activity[VectorSearch].searchResultRows",
+              "accumulate": false
+            },
             "activity": {
               "ref": "#log",
               "input": {
                 "Log Level": "INFO",
                 "flowInfo": false,
-                "message": "=string.concat(\"VectoreStore: \",$activity[DeleteVectorStore].id, \"Deleted: \",coerce.toString($activity[DeleteVectorStore].deleted) )",
+                "message": "=string.concat(\"File: \",$iteration[value].filename ,\" Text: \", coerce.toString($iteration[value].content))",
                 "logLevel": "INFO"
               }
             }
@@ -141,7 +147,7 @@
             }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjAsInkiOjcyfSwiU2xlZXBGb3JEZWJ1ZyI6eyJ4IjoxMTcsInkiOjYzfSwiRGVsZXRlVmVjdG9yU3RvcmUiOnsieCI6Mzc3LCJ5Ijo4NH0sIkxvZ01lc3NhZ2UiOnsieCI6NjU4LCJ5Ijo5MX0sIlJldHVybiI6eyJ4Ijo5NDcsInkiOjY3fX0=",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjAsInkiOjcyfSwiVmVjdG9yU2VhcmNoIjp7IngiOjE0NSwieSI6NzB9LCJMb2dNZXNzYWdlIjp7IngiOjQzMCwieSI6NzR9LCJSZXR1cm4iOnsieCI6NjQ5LCJ5Ijo4MH19",
         "metadata": {
           "input": [],
           "output": [],
@@ -154,6 +160,11 @@
   ],
   "properties": [
     {
+      "name": "VECTORSTORE_ID",
+      "type": "string",
+      "value": "REPLACE ME"
+    },
+    {
       "name": "OPENAI_API_ENDPOINT_URL",
       "type": "string",
       "value": "https://api.openai.com/v1"
@@ -165,9 +176,9 @@
     }
   ],
   "connections": {},
-  "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS90aWJjby9mbG9nby1nZW5lcmFsL3NyYy9hcHAvR2VuZXJhbCIsImlkIjoiR2VuZXJhbCIsInZlcnNpb24iOiIxLjYuMTEiLCJ0YWciOiIxLjYuMTEtYjAyIiwibmFtZSI6IkdlbmVyYWwiLCJzM2xvY2F0aW9uIjoiVGliY28vR2VuZXJhbCIsImlzVXNlckV4dGVuc2lvbiI6ZmFsc2V9LHsicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2Zsb2dvLWVudGVycHJpc2UtaHViL2V4dGVuc2lvbnMvb3BlbkFJIiwiaWQiOiJvcGVuQUkiLCJ2ZXJzaW9uIjoiMS4wLjEiLCJ0YWciOiIxLjAuMCIsIm5hbWUiOiJPcGVuQUkgIiwiczNsb2NhdGlvbiI6IntVU0VSSUR9L29wZW5BSSIsImlzVXNlckV4dGVuc2lvbiI6dHJ1ZX1d",
+  "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS90aWJjby9mbG9nby1nZW5lcmFsL3NyYy9hcHAvR2VuZXJhbCIsImlkIjoiR2VuZXJhbCIsInZlcnNpb24iOiIxLjYuMTMiLCJ0YWciOiIxLjYuMTMtYjAzIiwibmFtZSI6IkdlbmVyYWwiLCJzM2xvY2F0aW9uIjoiVGliY28vR2VuZXJhbCIsImlzVXNlckV4dGVuc2lvbiI6ZmFsc2V9LHsicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2Zsb2dvLWVudGVycHJpc2UtaHViL2V4dGVuc2lvbnMvb3BlbkFJIiwiaWQiOiJvcGVuQUkiLCJ2ZXJzaW9uIjoiMS4wLjEiLCJ0YWciOiIxLjAuMSIsIm5hbWUiOiJPcGVuQUkiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vb3BlbkFJIiwiaXNVc2VyRXh0ZW5zaW9uIjp0cnVlfV0=",
   "metadata": {
     "endpoints": [],
-    "flogoVersion": "2.26.0"
+    "flogoVersion": "2.26.3"
   }
 }

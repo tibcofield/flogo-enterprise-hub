@@ -2,7 +2,6 @@
   "imports": [
     "github.com/project-flogo/flow",
     "github.com/project-flogo/contrib/activity/noop",
-    "github.com/tibco/flogo-general/src/app/General/activity/sleep",
     "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/fileList",
     "github.com/tibco/flogo-general/src/app/General/activity/mapper",
     "github.com/tibco/flogo-general/src/app/General/activity/log",
@@ -42,39 +41,42 @@
     {
       "id": "flow:List_files_in_vectorstore",
       "data": {
+        "note": {
+          "author": {
+            "name": "VS code user",
+            "userId": "vscode"
+          },
+          "content": "Prerequesit:\n- openAI vectorstore with one or more files associated to it.",
+          "createAt": 1779879034356,
+          "lastUpdatedAt": 1779879034356,
+          "title": "Flow Note"
+        },
         "name": "List files in vectorstore",
         "description": "",
         "links": [
           {
             "id": 1,
             "from": "StartActivity",
-            "to": "SleepToStartDebug",
+            "to": "FileList",
             "type": "label",
-            "label": "StartActivity to Sleep"
+            "label": "StartActivity to FileList"
           },
           {
             "id": 2,
-            "from": "SleepToStartDebug",
-            "to": "FileList",
-            "type": "label",
-            "label": "SleepToStartDebug to FileList1"
-          },
-          {
-            "id": 3,
             "from": "FileList",
             "to": "Mapper",
             "type": "label",
             "label": "FileList to Mapper"
           },
           {
-            "id": 4,
+            "id": 3,
             "from": "Mapper",
             "to": "LogOutput",
             "type": "label",
             "label": "Mapper to LogOutput"
           },
           {
-            "id": 5,
+            "id": 4,
             "from": "LogOutput",
             "to": "Return",
             "type": "label",
@@ -88,29 +90,6 @@
             "description": "NoOp Activity",
             "activity": {
               "ref": "#noop"
-            }
-          },
-          {
-            "id": "SleepToStartDebug",
-            "name": "SleepToStartDebug",
-            "description": "Simple sleep Activity",
-            "note": {
-              "author": {
-                "name": "VS code user",
-                "userId": "vscode"
-              },
-              "content": "Increase the sleep time when trying to debug activity code started from flogo flow.",
-              "createAt": 1776776279070,
-              "lastUpdatedAt": 1776776279070,
-              "title": "SleepToStartDebug"
-            },
-            "activity": {
-              "ref": "#sleep",
-              "input": {
-                "IntervalTypeSetting": "Millisecond",
-                "IntervalSetting": 10,
-                "Interval Type": ""
-              }
             }
           },
           {
@@ -212,7 +191,7 @@
             }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUwLCJ5Ijo1MH0sIlNsZWVwVG9TdGFydERlYnVnIjp7IngiOjI0NCwieSI6NDd9LCJGaWxlTGlzdCI6eyJ4Ijo0NDAsInkiOjQ5fSwiTWFwcGVyIjp7IngiOjY1NywieSI6NTJ9LCJMb2dPdXRwdXQiOnsieCI6ODQ1LCJ5Ijo0OX0sIlJldHVybiI6eyJ4IjoxMDY0LCJ5Ijo1NX19",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUwLCJ5Ijo1MH0sIkZpbGVMaXN0Ijp7IngiOjI0MCwieSI6NDJ9LCJNYXBwZXIiOnsieCI6NTQ1LCJ5Ijo0MH0sIkxvZ091dHB1dCI6eyJ4Ijo3NzcsInkiOjM4fSwiUmV0dXJuIjp7IngiOjk5OCwieSI6Mzl9fQ==",
         "metadata": {
           "input": [],
           "output": [],
@@ -223,11 +202,6 @@
   ],
   "properties": [
     {
-      "name": "VECTORSTORE_ID",
-      "type": "string",
-      "value": "REPLACE ME"
-    },
-    {
       "name": "OPENAI_API_ENDPOINT_URL",
       "type": "string",
       "value": "https://api.openai.com/v1"
@@ -236,12 +210,17 @@
       "name": "OPENAI_API_KEY",
       "type": "string",
       "value": "REPLACE ME"
+    },
+    {
+      "name": "VECTORSTORE_ID",
+      "type": "string",
+      "value": "REPLACE ME"
     }
   ],
   "connections": {},
-  "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS90aWJjby9mbG9nby1nZW5lcmFsL3NyYy9hcHAvR2VuZXJhbCIsImlkIjoiR2VuZXJhbCIsInZlcnNpb24iOiIxLjYuMTEiLCJ0YWciOiIxLjYuMTEtYjAyIiwibmFtZSI6IkdlbmVyYWwiLCJzM2xvY2F0aW9uIjoiVGliY28vR2VuZXJhbCIsImlzVXNlckV4dGVuc2lvbiI6ZmFsc2V9LHsicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2Zsb2dvLWVudGVycHJpc2UtaHViL2V4dGVuc2lvbnMvb3BlbkFJIiwiaWQiOiJvcGVuQUkiLCJ2ZXJzaW9uIjoiMS4wLjEiLCJ0YWciOiIxLjAuMSIsIm5hbWUiOiJPcGVuQUkiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vb3BlbkFJIiwiaXNVc2VyRXh0ZW5zaW9uIjp0cnVlfV0=",
+  "contrib": "W3sicmVmIjoiZ2l0aHViLmNvbS90aWJjby9mbG9nby1nZW5lcmFsL3NyYy9hcHAvR2VuZXJhbCIsImlkIjoiR2VuZXJhbCIsInZlcnNpb24iOiIxLjYuMTMiLCJ0YWciOiIxLjYuMTMtYjAzIiwibmFtZSI6IkdlbmVyYWwiLCJzM2xvY2F0aW9uIjoiVGliY28vR2VuZXJhbCIsImlzVXNlckV4dGVuc2lvbiI6ZmFsc2V9LHsicmVmIjoiZ2l0aHViLmNvbS9USUJDT1NvZnR3YXJlL2Zsb2dvLWVudGVycHJpc2UtaHViL2V4dGVuc2lvbnMvb3BlbkFJIiwiaWQiOiJvcGVuQUkiLCJ2ZXJzaW9uIjoiMS4wLjEiLCJ0YWciOiIxLjAuMSIsIm5hbWUiOiJPcGVuQUkiLCJzM2xvY2F0aW9uIjoie1VTRVJJRH0vb3BlbkFJIiwiaXNVc2VyRXh0ZW5zaW9uIjp0cnVlfV0=",
   "metadata": {
     "endpoints": [],
-    "flogoVersion": "2.26.0"
+    "flogoVersion": "2.26.3"
   }
 }

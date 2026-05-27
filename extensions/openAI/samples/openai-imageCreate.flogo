@@ -2,7 +2,6 @@
   "imports": [
     "github.com/project-flogo/flow",
     "github.com/project-flogo/contrib/activity/noop",
-    "github.com/tibco/flogo-general/src/app/General/activity/sleep",
     "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/imageCreate",
     "github.com/tibco/flogo-general/src/app/General/activity/log",
     "github.com/tibco/flogo-files/src/app/File/activity/write",
@@ -31,58 +30,51 @@
           "action": {
             "ref": "github.com/project-flogo/flow",
             "settings": {
-              "flowURI": "res://flow:Image_create "
+              "flowURI": "res://flow:Image_create"
             }
           },
-          "name": "Image_create "
+          "name": "Image_create"
         }
       ]
     }
   ],
   "resources": [
     {
-      "id": "flow:Image_create ",
+      "id": "flow:Image_create",
       "data": {
-        "name": "Image create ",
+        "name": "Image create",
         "description": "",
         "links": [
           {
             "id": 1,
             "from": "StartActivity",
-            "to": "Sleep",
+            "to": "ImageCreate",
             "type": "label",
-            "label": "StartActivity to Sleep"
+            "label": "StartActivity to ImageCreate"
           },
           {
             "id": 2,
-            "from": "Sleep",
-            "to": "ImageCreate",
-            "type": "label",
-            "label": "Sleep to ImageCreate"
-          },
-          {
-            "id": 3,
             "from": "ImageCreate",
             "to": "LogMessage",
             "type": "label",
             "label": "ImageCreate to LogMessage"
           },
           {
-            "id": 4,
+            "id": 3,
             "from": "LogMessage",
             "to": "WriteFile",
             "type": "label",
             "label": "LogMessage to WriteFile"
           },
           {
-            "id": 5,
+            "id": 4,
             "from": "WriteFile",
             "to": "LogMessage1",
             "type": "label",
             "label": "WriteFile to LogMessage1"
           },
           {
-            "id": 6,
+            "id": 5,
             "from": "LogMessage1",
             "to": "Return",
             "type": "label",
@@ -96,18 +88,6 @@
             "description": "NoOp Activity",
             "activity": {
               "ref": "#noop"
-            }
-          },
-          {
-            "id": "Sleep",
-            "name": "Sleep",
-            "description": "Simple sleep Activity",
-            "activity": {
-              "ref": "#sleep",
-              "input": {
-                "IntervalTypeSetting": "Millisecond",
-                "IntervalSetting": 20
-              }
             }
           },
           {
@@ -136,7 +116,7 @@
                 "user": "42"
               },
               "input": {
-                "prompt": "give me a image of the full moon in the center a big number with the sequence number of the images we are creating.  "
+                "prompt": "give me a image of the full moon in the center a big number with the sequence number of the images we are creating."
               },
               "schemas": {
                 "output": {
@@ -234,7 +214,7 @@
             }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjEwMCwieSI6MTAwfSwiU2xlZXAiOnsieCI6MTE3LCJ5IjoyMjV9LCJJbWFnZUNyZWF0ZSI6eyJ4IjoyNzYsInkiOjg2fSwiTG9nTWVzc2FnZSI6eyJ4Ijo0MzgsInkiOjIyMn0sIldyaXRlRmlsZSI6eyJ4Ijo2MTQsInkiOjg2fSwiTG9nTWVzc2FnZTEiOnsieCI6Nzk2LCJ5IjoyMDN9LCJSZXR1cm4iOnsieCI6MTEwNSwieSI6MH19",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjEwMCwieSI6MTAwfSwiSW1hZ2VDcmVhdGUiOnsieCI6MjY4LCJ5Ijo5MX0sIkxvZ01lc3NhZ2UiOnsieCI6NDM4LCJ5IjoyMjJ9LCJXcml0ZUZpbGUiOnsieCI6NjE0LCJ5Ijo4Nn0sIkxvZ01lc3NhZ2UxIjp7IngiOjgwMSwieSI6MjE3fSwiUmV0dXJuIjp7IngiOjEwMjksInkiOjk1fX0=",
         "metadata": {
           "input": [],
           "output": [],
