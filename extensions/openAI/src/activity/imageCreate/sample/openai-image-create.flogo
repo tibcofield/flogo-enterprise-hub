@@ -6,6 +6,7 @@
     "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/imageCreate",
     "github.com/tibco/flogo-general/src/app/General/activity/log",
     "github.com/tibco/flogo-files/src/app/File/activity/write",
+    "github.com/project-flogo/contrib/activity/actreturn",
     "github.com/tibco/flogo-general/src/app/General/trigger/startuphook",
     "github.com/project-flogo/contrib/function/coerce",
     "github.com/project-flogo/contrib/function/string",
@@ -30,19 +31,19 @@
           "action": {
             "ref": "github.com/project-flogo/flow",
             "settings": {
-              "flowURI": "res://flow:Image_create"
+              "flowURI": "res://flow:Image_create "
             }
           },
-          "name": "Image_create"
+          "name": "Image_create "
         }
       ]
     }
   ],
   "resources": [
     {
-      "id": "flow:Image_create",
+      "id": "flow:Image_create ",
       "data": {
-        "name": "Image create",
+        "name": "Image create ",
         "description": "",
         "links": [
           {
@@ -79,6 +80,13 @@
             "to": "LogMessage1",
             "type": "label",
             "label": "WriteFile to LogMessage1"
+          },
+          {
+            "id": 6,
+            "from": "LogMessage1",
+            "to": "Return",
+            "type": "label",
+            "label": "LogMessage1 to Return"
           }
         ],
         "tasks": [
@@ -105,7 +113,7 @@
           {
             "id": "ImageCreate",
             "name": "ImageCreate",
-            "description": "Generates one or more images from a text prompt using OpenAI's image generation API (DALL·E 2, DALL·E 3, or GPT image models). Note: streaming and partial images are not supported by this activity.",
+            "description": "Generates one or more images from a text prompt using OpenAI's image generation API (GPT image models). Note: streaming and partial images are not supported by this activity.",
             "settings": {
               "retryOnError": {
                 "count": 0,
@@ -117,12 +125,10 @@
               "settings": {
                 "endPointURL": "=$property[\"OPENAI_API_ENDPOINT_URL\"]",
                 "apiKey": "=$property[\"OPENAI_API_KEY\"]",
-                "model": "gpt-image-1",
-                "numberOfImages": 1,
-                "size": "auto",
+                "model": "gpt-image-1-mini",
+                "numberOfImages": 2,
+                "size": "1024x1024",
                 "quality": "low",
-                "style": "",
-                "responseFormat": "",
                 "outputFormat": "jpeg",
                 "background": "",
                 "outputCompression": 0,
@@ -130,7 +136,7 @@
                 "user": "42"
               },
               "input": {
-                "prompt": "give me a image of the full moon"
+                "prompt": "give me a image of the full moon in the center a big number with the sequence number of the images we are creating.  "
               },
               "schemas": {
                 "output": {
@@ -218,9 +224,17 @@
                 "logLevel": ""
               }
             }
+          },
+          {
+            "id": "Return",
+            "name": "Return",
+            "description": "Simple Return Activity",
+            "activity": {
+              "ref": "#actreturn"
+            }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjEwMCwieSI6MTAwfSwiU2xlZXAiOnsieCI6MTE3LCJ5IjoyMjV9LCJJbWFnZUNyZWF0ZSI6eyJ4IjoyNzYsInkiOjg2fSwiTG9nTWVzc2FnZSI6eyJ4Ijo0MzgsInkiOjIyMn0sIldyaXRlRmlsZSI6eyJ4Ijo2MTQsInkiOjg2fSwiTG9nTWVzc2FnZTEiOnsieCI6Nzk2LCJ5IjoyMDN9fQ==",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjEwMCwieSI6MTAwfSwiU2xlZXAiOnsieCI6MTE3LCJ5IjoyMjV9LCJJbWFnZUNyZWF0ZSI6eyJ4IjoyNzYsInkiOjg2fSwiTG9nTWVzc2FnZSI6eyJ4Ijo0MzgsInkiOjIyMn0sIldyaXRlRmlsZSI6eyJ4Ijo2MTQsInkiOjg2fSwiTG9nTWVzc2FnZTEiOnsieCI6Nzk2LCJ5IjoyMDN9LCJSZXR1cm4iOnsieCI6MTEwNSwieSI6MH19",
         "metadata": {
           "input": [],
           "output": [],

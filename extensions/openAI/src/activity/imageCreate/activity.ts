@@ -26,51 +26,23 @@ export class ImageCreateActivityContribution extends WiServiceHandlerContributio
     }
 
     value = (fieldName: string, context: IActivityContribution): Observable<any> | any => {
-        if (fieldName === "numberOfImages") {
-            const modelField: IFieldDefinition = context.getField("model");
-            if (modelField && modelField.value === "dall-e-3") {
-                return 1;
-            }
-        }
         if (fieldName === "size") {
-            const model = String(context.getField("model").value || "");
-            const family =
-                (!model || model === "dall-e-2") ? "dall-e-2" :
-                (model === "dall-e-3") ? "dall-e-3" :
-                (model.indexOf("gpt-image-2") === 0) ? "gpt-image-2" :
-                (model.indexOf("gpt-image") === 0) ? "gpt-image" : "";
-
-            switch (family) {
-                case "dall-e-2":
-                    return ["", "256x256", "512x512", "1024x1024"];
-                case "dall-e-3":
-                    return ["", "1024x1024", "1024x1792", "1792x1024"];
-                case "gpt-image":
-                case "gpt-image-2":
-                    return ["", "1024x1024", "1024x1536", "1536x1024", "auto"];
-                default:
-                    return [""];
-            }
+            // All currently supported models (gpt-image family) share the
+            // same standard size options. gpt-image-2 also accepts arbitrary
+            // WxH values, which are handled by validate() below.
+            return ["", "1024x1024", "1024x1536", "1536x1024", "auto"];
         }
         return null;
     }
-
-    visible = (fieldName: string, context: IActivityContribution): Observable<boolean> | boolean => {
-        if (fieldName === "style") {
-            const model = String(context.getField("model").value || "");
-            return model === "dall-e-3";
-        }
-        return true;
-    }
-
 
     validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
         const vResult = ValidationResult.newValidationResult();
 
         // Helper: classify the model into a family.
-        const modelFamily = (m: string): "dall-e-2" | "dall-e-3" | "gpt-image" | "gpt-image-2" | "" => {
-            if (!m || m === "dall-e-2") return "dall-e-2";
-            if (m === "dall-e-3") return "dall-e-3";
+        // DALL·E 2 and DALL·E 3 were deprecated by OpenAI on May 12, 2026 and
+        // are no longer supported. Only gpt-image-* models remain.
+        const modelFamily = (m: string): "gpt-image" | "gpt-image-2" | "" => {
+            if (!m) return "gpt-image";
             if (m.indexOf("gpt-image-2") === 0) return "gpt-image-2";
             if (m.indexOf("gpt-image") === 0) return "gpt-image";
             return "";
@@ -83,6 +55,12 @@ export class ImageCreateActivityContribution extends WiServiceHandlerContributio
             return f && f.value !== null && f.value !== undefined ? String(f.value) : "";
         };
 
+        // -------------------- model --------------------
+        if (fieldName === "model" && model !== "" && family === "") {
+            return vResult.setError("OPENAI-IMG-CREATE-1000",
+                "Unsupported model. DALL\u00b7E 2 and DALL\u00b7E 3 were deprecated by OpenAI on May 12, 2026. Use gpt-image-1 or gpt-image-1-mini instead.");
+        }
+
         // -------------------- numberOfImages --------------------
         if (fieldName === "numberOfImages") {
             const raw = context.getField("numberOfImages").value;
@@ -92,10 +70,6 @@ export class ImageCreateActivityContribution extends WiServiceHandlerContributio
                     return vResult.setError("OPENAI-IMG-CREATE-1001",
                         "Number of Images must be between 1 and 10.");
                 }
-                if (family === "dall-e-3" && n !== 1) {
-                    return vResult.setError("OPENAI-IMG-CREATE-1002",
-                        "When model is 'dall-e-3', Number of Images must be 1.");
-                }
             }
         }
 
@@ -103,18 +77,8 @@ export class ImageCreateActivityContribution extends WiServiceHandlerContributio
         if (fieldName === "size") {
             const size = val("size");
             if (size !== "") {
-                const dalle2 = ["256x256", "512x512", "1024x1024"];
-                const dalle3 = ["1024x1024", "1024x1792", "1792x1024"];
                 const gptStd = ["1024x1024", "1024x1536", "1536x1024", "auto"];
 
-                if (family === "dall-e-2" && dalle2.indexOf(size) < 0) {
-                    return vResult.setError("OPENAI-IMG-CREATE-1010",
-                        "For 'dall-e-2', Size must be one of: " + dalle2.join(", ") + ".");
-                }
-                if (family === "dall-e-3" && dalle3.indexOf(size) < 0) {
-                    return vResult.setError("OPENAI-IMG-CREATE-1011",
-                        "For 'dall-e-3', Size must be one of: " + dalle3.join(", ") + ".");
-                }
                 if (family === "gpt-image" && gptStd.indexOf(size) < 0) {
                     return vResult.setError("OPENAI-IMG-CREATE-1012",
                         "For gpt-image models, Size must be one of: " + gptStd.join(", ") + ".");
@@ -151,91 +115,30 @@ export class ImageCreateActivityContribution extends WiServiceHandlerContributio
         if (fieldName === "quality") {
             const q = val("quality");
             if (q !== "") {
-                const dalle2 = ["standard", "auto"];
-                const dalle3 = ["standard", "hd", "auto"];
-                const gpt = ["low", "medium", "high", "auto"];
-                if (family === "dall-e-2" && dalle2.indexOf(q) < 0) {
-                    return vResult.setError("OPENAI-IMG-CREATE-1020",
-                        "For 'dall-e-2', Quality must be empty, 'standard' or 'auto'.");
-                }
-                if (family === "dall-e-3" && dalle3.indexOf(q) < 0) {
-                    return vResult.setError("OPENAI-IMG-CREATE-1021",
-                        "For 'dall-e-3', Quality must be one of: " + dalle3.join(", ") + ".");
-                }
-                if ((family === "gpt-image" || family === "gpt-image-2") && gpt.indexOf(q) < 0) {
+                const allowed = ["low", "medium", "high", "auto"];
+                if (allowed.indexOf(q) < 0) {
                     return vResult.setError("OPENAI-IMG-CREATE-1022",
-                        "For gpt-image models, Quality must be one of: " + gpt.join(", ") + ".");
+                        "Quality must be one of: " + allowed.join(", ") + ".");
                 }
             }
         }
 
-        // -------------------- style (dall-e-3 only) --------------------
-        if (fieldName === "style") {
-            const s = val("style");
-            if (s !== "" && family !== "dall-e-3") {
-                return vResult.setError("OPENAI-IMG-CREATE-1030",
-                    "Style is only supported by 'dall-e-3'.");
-            }
-        }
-
-        // -------------------- responseFormat (dall-e-2/3 only, exclusive with outputFormat) --------------------
-        if (fieldName === "responseFormat") {
-            const rf = val("responseFormat");
-            const of = val("outputFormat");
-            if (rf !== "") {
-                if (family !== "dall-e-2" && family !== "dall-e-3") {
-                    return vResult.setError("OPENAI-IMG-CREATE-1040",
-                        "Response Format is only supported by 'dall-e-2' and 'dall-e-3'.");
-                }
-                if (of !== "") {
-                    return vResult.setError("OPENAI-IMG-CREATE-1041",
-                        "Response Format and Output Format are mutually exclusive.");
-                }
-            }
-        }
-
-        // -------------------- outputFormat (gpt-image* only, exclusive with responseFormat) --------------------
-        if (fieldName === "outputFormat") {
-            const of = val("outputFormat");
-            const rf = val("responseFormat");
-            if (of !== "") {
-                if (family !== "gpt-image" && family !== "gpt-image-2") {
-                    return vResult.setError("OPENAI-IMG-CREATE-1050",
-                        "Output Format is only supported by gpt-image models.");
-                }
-                if (rf !== "") {
-                    return vResult.setError("OPENAI-IMG-CREATE-1051",
-                        "Output Format and Response Format are mutually exclusive.");
-                }
-            }
-        }
-
-        // -------------------- background (gpt-image* only; transparent requires png/webp) --------------------
+        // -------------------- background (transparent requires png/webp) --------------------
         if (fieldName === "background") {
             const bg = val("background");
             const of = val("outputFormat");
-            if (bg !== "") {
-                if (family !== "gpt-image" && family !== "gpt-image-2") {
-                    return vResult.setError("OPENAI-IMG-CREATE-1060",
-                        "Background is only supported by gpt-image models.");
-                }
-                if (bg === "transparent" && of !== "" && of !== "png" && of !== "webp") {
-                    return vResult.setError("OPENAI-IMG-CREATE-1061",
-                        "Background 'transparent' requires Output Format 'png' or 'webp' (or empty).");
-                }
+            if (bg === "transparent" && of !== "" && of !== "png" && of !== "webp") {
+                return vResult.setError("OPENAI-IMG-CREATE-1061",
+                    "Background 'transparent' requires Output Format 'png' or 'webp' (or empty).");
             }
         }
 
-        // -------------------- outputCompression (gpt-image* only, 1-100, needs webp/jpeg) --------------------
+        // -------------------- outputCompression (1-100, needs webp/jpeg) --------------------
         if (fieldName === "outputCompression") {
             const raw = context.getField("outputCompression").value;
             if (raw !== null && raw !== undefined && String(raw) !== "") {
                 const n = Number(raw);
                 if (n !== 0) {
-                    if (family !== "gpt-image" && family !== "gpt-image-2") {
-                        return vResult.setError("OPENAI-IMG-CREATE-1070",
-                            "Output Compression is only supported by gpt-image models.");
-                    }
                     if (!Number.isFinite(n) || n < 1 || n > 100) {
                         return vResult.setError("OPENAI-IMG-CREATE-1071",
                             "Output Compression must be between 1 and 100.");
@@ -246,15 +149,6 @@ export class ImageCreateActivityContribution extends WiServiceHandlerContributio
                             "Output Compression only applies when Output Format is 'webp' or 'jpeg'.");
                     }
                 }
-            }
-        }
-
-        // -------------------- moderation (gpt-image* only) --------------------
-        if (fieldName === "moderation") {
-            const md = val("moderation");
-            if (md !== "" && family !== "gpt-image" && family !== "gpt-image-2") {
-                return vResult.setError("OPENAI-IMG-CREATE-1080",
-                    "Moderation is only supported by gpt-image models.");
             }
         }
 

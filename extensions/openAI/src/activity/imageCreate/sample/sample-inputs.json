@@ -1,24 +1,21 @@
 {
-  "_comment": "Sample input payloads for the openai-image-create activity. Each top-level key is a scenario you can copy into a Flogo flow's input mapper or use with a test harness.",
+  "_comment": "Sample input payloads for the openai-image-create activity. Each top-level key is a scenario you can copy into a Flogo flow's input mapper or use with a test harness. DALL\u00b7E 2 and DALL\u00b7E 3 were deprecated by OpenAI on May 12, 2026 and are no longer supported \u2014 use gpt-image-* models.",
 
-  "dalle2_minimal": {
-    "_description": "DALL\u00b7E 2, smallest valid request. Returns 1 URL.",
+  "gpt_image_minimal": {
+    "_description": "Smallest valid request. Returns 1 image.",
     "prompt": "A cute baby sea otter floating on its back",
-    "model": "dall-e-2",
+    "model": "gpt-image-1",
     "numberOfImages": 1,
-    "size": "256x256",
-    "responseFormat": "url"
+    "size": "1024x1024"
   },
 
-  "dalle3_hd_vivid": {
-    "_description": "DALL\u00b7E 3 with HD quality and vivid style. Note n must be 1.",
+  "gpt_image_mini_auto": {
+    "_description": "gpt-image-1-mini with auto size and quality.",
     "prompt": "An ultra-detailed cinematic photo of a snow leopard on a Himalayan ridge at sunrise",
-    "model": "dall-e-3",
+    "model": "gpt-image-1-mini",
     "numberOfImages": 1,
-    "size": "1792x1024",
-    "quality": "hd",
-    "style": "vivid",
-    "responseFormat": "b64_json"
+    "size": "auto",
+    "quality": "auto"
   },
 
   "gpt_image_transparent_png": {
@@ -57,23 +54,22 @@
   },
 
   "user_tagged": {
-    "_description": "Same as dalle2_minimal but with an end-user identifier for abuse monitoring.",
+    "_description": "Minimal request with an end-user identifier for abuse monitoring.",
     "prompt": "A simple line drawing of a coffee cup",
-    "model": "dall-e-2",
+    "model": "gpt-image-1",
     "numberOfImages": 1,
-    "size": "512x512",
-    "responseFormat": "url",
+    "size": "1024x1024",
     "user": "end-user-12345"
   },
 
   "_invalid_examples": {
     "_description": "These payloads are intentionally INVALID and will be rejected by validateInput. Useful for negative tests.",
 
-    "dalle3_n_too_large": {
-      "_why": "dall-e-3 requires n=1",
+    "deprecated_dalle": {
+      "_why": "DALL\u00b7E 2/3 were deprecated by OpenAI on May 12, 2026 and are no longer accepted",
       "prompt": "anything",
       "model": "dall-e-3",
-      "numberOfImages": 2
+      "numberOfImages": 1
     },
     "transparent_with_jpeg": {
       "_why": "background=transparent requires outputFormat png or webp",
@@ -81,13 +77,6 @@
       "model": "gpt-image-1",
       "background": "transparent",
       "outputFormat": "jpeg"
-    },
-    "response_and_output_format": {
-      "_why": "responseFormat and outputFormat are mutually exclusive",
-      "prompt": "anything",
-      "model": "dall-e-3",
-      "responseFormat": "url",
-      "outputFormat": "png"
     },
     "compression_with_png": {
       "_why": "outputCompression only applies when outputFormat=webp|jpeg",
