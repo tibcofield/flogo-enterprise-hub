@@ -42,15 +42,11 @@
       "name": "model",
       "type": "string",
       "required": false,
-      "allowed": [
-        "gpt-image-1",
-        "gpt-image-1-mini",
-        "gpt-image-1.5",
-        "gpt-image-2"
-      ],
       "display": {
         "name": "Model",
         "description": "Model to use. Defaults to gpt-image-1. Most other parameters depend on this choice. DALL·E 2 and DALL·E 3 were deprecated by OpenAI on May 12, 2026 and replaced by gpt-image-1 / gpt-image-1-mini.",
+        "type": "dropdown",
+        "selection": "single",
         "validation": true
       },
       "value": "gpt-image-1"

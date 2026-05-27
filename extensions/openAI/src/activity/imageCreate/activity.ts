@@ -5,6 +5,9 @@
  */
 
 import { Observable } from "rxjs/Observable";
+import "rxjs/add/observable/of";
+import "rxjs/add/operator/map";
+import "rxjs/add/operator/catch";
 import { Injectable, Injector, Inject } from "@angular/core";
 import { Http } from "@angular/http";
 import {
@@ -25,7 +28,42 @@ export class ImageCreateActivityContribution extends WiServiceHandlerContributio
         super(injector, http);
     }
 
+    // Remote URL that returns the list of supported image generation models
+    // as a JSON document of the form { "models": ["gpt-image-1", ...] } or a
+    // bare JSON array of strings. The Model dropdown in Flogo Studio is
+    // populated from this URL each time the field is opened.
+    private static readonly MODELS_URL: string =
+        "https://github.com/tibcofield/flogo-enterprise-hub/blob/mc_imageCreate/extensions/openAI/config/image-create-models.json";
+
+    // Fallback list used when MODELS_URL cannot be reached (offline Studio,
+    // CORS failure, 404, etc.). Also serves as the source of truth for
+    // validation when no remote list is available.
+    // DALL·E 2 and DALL·E 3 were deprecated by OpenAI on May 12, 2026.
+    private static readonly FALLBACK_MODELS: string[] = [
+        "gpt-image-1",
+        "gpt-image-1-mini",
+        "gpt-image-1.5",
+        "gpt-image-2"
+    ];
+
     value = (fieldName: string, context: IActivityContribution): Observable<any> | any => {
+        if (fieldName === "model") {
+            // Fetch the supported model list from a remote JSON document so
+            // it can be updated without rebuilding the extension. On any
+            // network/parse error, fall back to the hardcoded list above.
+            return this.http.get(ImageCreateActivityContribution.MODELS_URL)
+                .map((res: any) => {
+                    const body = res.json();
+                    const list: any =
+                        Array.isArray(body) ? body :
+                            (body && Array.isArray(body.models) ? body.models : null);
+                    if (!list || list.length === 0) {
+                        return ImageCreateActivityContribution.FALLBACK_MODELS;
+                    }
+                    return list.map((m: any) => String(m));
+                })
+                .catch(() => Observable.of(ImageCreateActivityContribution.FALLBACK_MODELS));
+        }
         if (fieldName === "size") {
             // All currently supported models (gpt-image family) share the
             // same standard size options. gpt-image-2 also accepts arbitrary
