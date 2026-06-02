@@ -6,7 +6,7 @@
     "github.com/tibco/flogo-general/src/app/General/activity/log",
     "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/fileUpload",
     "github.com/tibco/flogo-general/src/app/General/activity/sleep",
-    "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/fileList",
+    "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/vectorStoreFileList",
     "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/vectorSearch",
     "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/fileDelete",
     "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/vectorStoreDelete",
@@ -268,7 +268,7 @@
               }
             },
             "activity": {
-              "ref": "#fileList",
+              "ref": "#vectorStoreFileList",
               "settings": {
                 "endPointURL": "=$property[\"OPENAI_API_ENDPOINT_URL\"]",
                 "apiKey": "=$property[\"OPENAI_API_KEY\"]"

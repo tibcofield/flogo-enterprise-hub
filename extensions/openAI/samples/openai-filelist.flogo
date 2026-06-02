@@ -2,7 +2,7 @@
   "imports": [
     "github.com/project-flogo/flow",
     "github.com/project-flogo/contrib/activity/noop",
-    "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/fileList",
+    "github.com/TIBCOSoftware/flogo-enterprise-hub/extensions/openAI/activity/vectorStoreFileList",
     "github.com/tibco/flogo-general/src/app/General/activity/mapper",
     "github.com/tibco/flogo-general/src/app/General/activity/log",
     "github.com/project-flogo/contrib/activity/actreturn",
@@ -57,16 +57,16 @@
           {
             "id": 1,
             "from": "StartActivity",
-            "to": "FileList",
+            "to": "VectorStoreFileList",
             "type": "label",
-            "label": "StartActivity to FileList"
+            "label": "StartActivity to VectorStoreFileList"
           },
           {
             "id": 2,
-            "from": "FileList",
+            "from": "VectorStoreFileList",
             "to": "Mapper",
             "type": "label",
-            "label": "FileList to Mapper"
+            "label": "VectorStoreFileList to Mapper"
           },
           {
             "id": 3,
@@ -93,8 +93,8 @@
             }
           },
           {
-            "id": "FileList",
-            "name": "FileList",
+            "id": "VectorStoreFileList",
+            "name": "VectorStoreFileList",
             "description": "This activity lists files in an OpenAI vector store with support for filtering and pagination",
             "settings": {
               "retryOnError": {
@@ -103,7 +103,7 @@
               }
             },
             "activity": {
-              "ref": "#fileList",
+              "ref": "#vectorStoreFileList",
               "settings": {
                 "endPointURL": "=$property[\"OPENAI_API_ENDPOINT_URL\"]",
                 "apiKey": "=$property[\"OPENAI_API_KEY\"]"
@@ -137,7 +137,7 @@
                 "input": {
                   "mapping": {
                     "files": {
-                      "@foreach($activity[FileList].files,files)": {
+                      "@foreach($activity[VectorStoreFileList].files, files)": {
                         "=": "$loop"
                       }
                     }
@@ -169,7 +169,7 @@
             "description": "Simple Log Message Activity",
             "type": "iterator",
             "settings": {
-              "iterate": "=$activity[FileList].files",
+              "iterate": "=$activity[VectorStoreFileList].files",
               "accumulate": false
             },
             "activity": {
@@ -191,7 +191,7 @@
             }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUwLCJ5Ijo1MH0sIkZpbGVMaXN0Ijp7IngiOjI0MCwieSI6NDJ9LCJNYXBwZXIiOnsieCI6NTQ1LCJ5Ijo0MH0sIkxvZ091dHB1dCI6eyJ4Ijo3NzcsInkiOjM4fSwiUmV0dXJuIjp7IngiOjk5OCwieSI6Mzl9fQ==",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUwLCJ5Ijo1MH0sIlZlY3RvclN0b3JlRmlsZUxpc3QiOnsieCI6MjM5LCJ5Ijo0Nn0sIk1hcHBlciI6eyJ4Ijo1NDUsInkiOjQwfSwiTG9nT3V0cHV0Ijp7IngiOjc3NywieSI6Mzh9LCJSZXR1cm4iOnsieCI6OTk4LCJ5IjozOX19",
         "metadata": {
           "input": [],
           "output": [],

@@ -1,4 +1,4 @@
-package fileList
+package vectorStoreFileList
 
 /*
 * Copyright © 2023 - 2026. Cloud Software Group, Inc.

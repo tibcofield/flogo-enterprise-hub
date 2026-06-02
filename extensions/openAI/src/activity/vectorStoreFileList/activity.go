@@ -1,4 +1,4 @@
-package fileList
+package vectorStoreFileList
 
 /*
 * Copyright © 2023 - 2026. Cloud Software Group, Inc.
@@ -18,7 +18,7 @@ import (
 	"github.com/project-flogo/core/support/log"
 )
 
-var logger = log.ChildLogger(log.RootLogger(), "openai-file-list")
+var logger = log.ChildLogger(log.RootLogger(), "openai-vector-store-file-list")
 
 // activityMd is the metadata for the activity
 var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
