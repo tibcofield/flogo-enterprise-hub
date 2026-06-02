@@ -11,7 +11,7 @@
     "github.com/project-flogo/contrib/function/string"
   ],
   "name": "openaiVectorStore-openAI",
-  "description": "",
+  "description": "Upload file and associate to vectore store",
   "version": "1.0.0",
   "type": "flogo:app",
   "appModel": "1.1.1",
@@ -29,19 +29,19 @@
           "action": {
             "ref": "github.com/project-flogo/flow",
             "settings": {
-              "flowURI": "res://flow:Upload_to_Vector_Store"
+              "flowURI": "res://flow:File_upload_and_associate_to_Vector_Store"
             }
           },
-          "name": "Upload_to_Vector_Store"
+          "name": "File_upload_and_associate_to_Vector_Store"
         }
       ]
     }
   ],
   "resources": [
     {
-      "id": "flow:Upload_to_Vector_Store",
+      "id": "flow:File_upload_and_associate_to_Vector_Store",
       "data": {
-        "name": "Upload to Vector Store",
+        "name": "File upload and associate to Vector Store",
         "description": "",
         "links": [
           {
@@ -150,6 +150,7 @@
               },
               "input": {
                 "filename": "=$activity[Mapper].output.filename",
+                "fileId": "",
                 "vectorStoreID": "=$property[\"VECTORSTORE_ID\"]",
                 "fileAttributes": {
                   "mapping": {
@@ -184,7 +185,7 @@
             }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUsInkiOjkzfSwiTWFwcGVyIjp7IngiOjE4NiwieSI6ODl9LCJVcGxvYWRGaWxlIjp7IngiOjQ1NiwieSI6OTN9LCJMb2dPdXRwdXQiOnsieCI6NzM5LCJ5Ijo5N30sIlJldHVybiI6eyJ4IjoxMzAyLCJ5Ijo5OH19",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUsInkiOjkzfSwiTWFwcGVyIjp7IngiOjE4NiwieSI6ODl9LCJVcGxvYWRGaWxlIjp7IngiOjQ1NiwieSI6OTN9LCJMb2dPdXRwdXQiOnsieCI6NzM5LCJ5Ijo5N30sIlJldHVybiI6eyJ4Ijo5ODcsInkiOjk1fX0=",
         "metadata": {
           "input": [],
           "output": [],

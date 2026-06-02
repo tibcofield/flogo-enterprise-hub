@@ -2,9 +2,27 @@
 
 ## Overview
 
-The Upload File activity enables you to upload files to OpenAI's file storage system for use with various OpenAI services including assistants, fine-tuning, batch processing, and vector stores. This activity provides comprehensive file management capabilities with support for custom metadata, chunking strategies, and automatic vector store integration.
+The Upload File activity enables you to upload files to OpenAI's file storage system for use with various OpenAI services including assistants, fine-tuning, batch processing, and vector stores. This activity provides comprehensive file management capabilities with support for custom metadata, chunking strategies, and optional vector store integration.
 
-This activity uses the OpenAI Files API endpoint: `https://api.openai.com/v1/files`
+This activity uses the OpenAI Files API endpoint: `https://api.openai.com/v1/files` and, when applicable, the Vector Stores API endpoint: `https://api.openai.com/v1/vector_stores/{vector_store_id}/files`.
+
+## Supported Use Cases
+
+The activity supports three distinct use cases, selected automatically based on which inputs are provided:
+
+| # | Use Case | Required Inputs | Behavior |
+|---|----------|-----------------|----------|
+| 1 | **Upload file to OpenAI only** | `filename` | Uploads the local file to OpenAI file storage. The file is **not** associated with any vector store. |
+| 2 | **Upload file to OpenAI and associate it with a vector store** | `filename` + `vectorStoreID` | Uploads the local file to OpenAI file storage and then attaches it to the specified vector store (with chunking and optional metadata). |
+| 3 | **Associate an existing OpenAI file with a vector store** | `fileId` + `vectorStoreID` | Skips upload and attaches an already-uploaded OpenAI file (identified by `fileId`) to the specified vector store. |
+
+### Input Resolution Rules
+
+- If only `filename` is provided → Use Case 1 (upload only).
+- If `filename` and `vectorStoreID` are provided → Use Case 2 (upload + associate).
+- If `fileId` and `vectorStoreID` are provided → Use Case 3 (associate existing file).
+- If `fileId` is provided without `vectorStoreID`, the activity has nothing to do and will fail validation.
+- If both `filename` and `fileId` are provided, `filename` takes precedence (a new upload is performed).
 
 ## Prerequisites
 
@@ -54,15 +72,17 @@ The Upload File activity accepts the following input parameters:
 
 | Input | Type | Required | Description |
 |-------|------|----------|-------------|
-| **filename** | String | Yes | Full path to the local file to upload. Must be accessible from the Flogo runtime environment. |
-| **vectorStoreID** | String | Yes | Identifier of the OpenAI vector store the uploaded file is added to (with chunking). |
-| **fileAttributes** | Object | No | Custom metadata key-value pairs to associate with the file when adding to a vector store. |
+| **filename** | String | Conditional | Full path to the local file to upload. Required for Use Cases 1 and 2. Must be accessible from the Flogo runtime environment. |
+| **fileId** | String | Conditional | Identifier of an existing OpenAI file. Required for Use Case 3 (associating an already-uploaded file with a vector store). |
+| **vectorStoreID** | String | Conditional | Identifier of the OpenAI vector store the file is added to (with chunking). Required for Use Cases 2 and 3. Leave empty for Use Case 1 (upload only). |
+| **fileAttributes** | Object | No | Custom metadata key-value pairs to associate with the file when adding to a vector store. Ignored for Use Case 1. |
 
 ### Input Guidelines
 
-- **filename**: Must be an absolute or relative path to an existing file
-- **vectorStoreID**: Must reference an existing OpenAI vector store; the activity will fail if it is empty
-- **fileAttributes**: Structure should contain key-value pairs as objects with "key" and "value" properties
+- **filename**: Must be an absolute or relative path to an existing file. Provide for upload use cases (1 and 2).
+- **fileId**: Must reference an existing OpenAI file (for example, `file-abc123`). Provide for Use Case 3.
+- **vectorStoreID**: Must reference an existing OpenAI vector store when provided. Required for Use Cases 2 and 3.
+- **fileAttributes**: Structure should contain key-value pairs as objects with "key" and "value" properties. Only applied when the file is being associated with a vector store.
 
 ### File Attributes Example
 ```json
@@ -122,12 +142,14 @@ File type support may vary depending on the specified **Purpose**.
 
 ## Vector Store Integration
 
-The activity always adds the uploaded file to the vector store identified by the required **vectorStoreID** input. Specifically, it:
+Vector store integration is **optional** and only happens when `vectorStoreID` is provided (Use Cases 2 and 3). When enabled, the activity:
 
-1. Uploads the file to OpenAI file storage
+1. Uploads the file to OpenAI file storage (Use Case 2) **or** reuses the existing file referenced by `fileId` (Use Case 3)
 2. Processes the file content using the configured chunking strategy
 3. Adds the processed chunks to the specified vector store
-4. Associates custom metadata with each chunk
+4. Associates custom metadata (`fileAttributes`) with the vector store file entry
+
+When `vectorStoreID` is not provided (Use Case 1), the file is uploaded to OpenAI file storage only and no vector store calls are made.
 
 ### Chunking Strategy
 
@@ -139,38 +161,60 @@ The activity uses a static chunking strategy with the following parameters:
 
 ## Usage Examples
 
-### Basic File Upload
+### Use Case 1 — Upload File Only
 
-Upload a document for assistant use:
+Upload a document to OpenAI file storage without attaching it to any vector store. Provide only `filename`:
 
 ```
 Settings:
 - Purpose: "assistants"
-- Vector Store ID: (empty)
 - Timeout: 300
 
 Inputs:
 - filename: "/path/to/user_manual.pdf"
+- fileId: (empty)
+- vectorStoreID: (empty)
 - fileAttributes: (empty)
 ```
 
-### Vector Store Integration
+### Use Case 2 — Upload File and Associate with a Vector Store
 
-Upload with automatic vector store processing:
+Upload a document and add it to a vector store with chunking and metadata. Provide `filename` and `vectorStoreID`:
 
 ```
 Settings:
 - Purpose: "assistants"
-- Vector Store ID: "vs-abc123def456"
 - Max Chunk Size Tokens: 1000
 - Chunk Overlap Tokens: 200
 - Timeout: 600
 
 Inputs:
 - filename: "/documents/knowledge_base.pdf"
+- fileId: (empty)
+- vectorStoreID: "vs-abc123def456"
 - fileAttributes: [
     {"key": "category", "value": "documentation"},
     {"key": "priority", "value": "high"}
+  ]
+```
+
+### Use Case 3 — Associate an Existing OpenAI File with a Vector Store
+
+Attach a file that has already been uploaded to OpenAI to a vector store. Provide `fileId` and `vectorStoreID` (no `filename`):
+
+```
+Settings:
+- Purpose: "assistants"
+- Max Chunk Size Tokens: 1000
+- Chunk Overlap Tokens: 200
+- Timeout: 300
+
+Inputs:
+- filename: (empty)
+- fileId: "file-abc123def456"
+- vectorStoreID: "vs-abc123def456"
+- fileAttributes: [
+    {"key": "category", "value": "documentation"}
   ]
 ```
 

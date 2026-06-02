@@ -94,12 +94,17 @@
     {
       "name": "filename",
       "type": "string",
-      "required": true
+      "required": false
+    },
+    {
+      "name": "fileId",
+      "type": "string",
+      "required": false
     },
     {
       "name": "vectorStoreID",
       "type": "string",
-      "required": true
+      "required": false
     },
     {
       "name": "fileAttributes",
