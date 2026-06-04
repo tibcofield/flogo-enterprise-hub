@@ -33,6 +33,44 @@ var FileUploadActivityContribution = (function (_super) {
     function FileUploadActivityContribution(injector, http) {
         var _this = _super.call(this, injector, http) || this;
         _this.http = http;
+        _this.validate = function (fieldName, context) {
+            var vResult = wi_contrib_1.ValidationResult.newValidationResult();
+            if (fieldName !== "filename" && fieldName !== "fileId" && fieldName !== "vectorStoreID") {
+                return null;
+            }
+            var operationField = context.getField("operation");
+            var operation = operationField && operationField.value ? String(operationField.value) : "";
+            var isMapped = function (inputName) {
+                var mappings = context.inputMappings && context.inputMappings.mappings;
+                if (!mappings) {
+                    return false;
+                }
+                var entry = mappings["$INPUT['" + inputName + "']"];
+                if (!entry) {
+                    return false;
+                }
+                var expr = entry.expression;
+                return expr !== null && expr !== undefined && String(expr).trim() !== "";
+            };
+            var required = [];
+            if (operation === "Upload new file") {
+                required = ["filename"];
+            }
+            else if (operation === "Upload new file and Associate to VectorStore") {
+                required = ["filename", "vectorStoreID"];
+            }
+            else if (operation === "Associate existing file to VectorStore") {
+                required = ["fileId", "vectorStoreID"];
+            }
+            else {
+                return null;
+            }
+            var isRequired = required.indexOf(fieldName) >= 0;
+            if (isRequired && !isMapped(fieldName)) {
+                return vResult.setError("OPENAI-FILE-UPLOAD-1001", "'" + fieldName + "' is required when Operation is '" + operation + "'.");
+            }
+            return null;
+        };
         return _this;
     }
     FileUploadActivityContribution = __decorate([

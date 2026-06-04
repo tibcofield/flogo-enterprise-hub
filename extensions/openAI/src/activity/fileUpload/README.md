@@ -8,21 +8,23 @@ This activity uses the OpenAI Files API endpoint: `https://api.openai.com/v1/fil
 
 ## Supported Use Cases
 
-The activity supports three distinct use cases, selected automatically based on which inputs are provided:
+The activity supports three distinct use cases, selected explicitly via the **Operation** setting:
 
-| # | Use Case | Required Inputs | Behavior |
-|---|----------|-----------------|----------|
-| 1 | **Upload file to OpenAI only** | `filename` | Uploads the local file to OpenAI file storage. The file is **not** associated with any vector store. |
-| 2 | **Upload file to OpenAI and associate it with a vector store** | `filename` + `vectorStoreID` | Uploads the local file to OpenAI file storage and then attaches it to the specified vector store (with chunking and optional metadata). |
-| 3 | **Associate an existing OpenAI file with a vector store** | `fileId` + `vectorStoreID` | Skips upload and attaches an already-uploaded OpenAI file (identified by `fileId`) to the specified vector store. |
+| # | Operation | Required Inputs | Behavior |
+|---|-----------|-----------------|----------|
+| 1 | **Upload new file** | `filename` | Uploads the local file to OpenAI file storage. The file is **not** associated with any vector store. |
+| 2 | **Upload new file and Associate to VectorStore** | `filename` + `vectorStoreID` | Uploads the local file to OpenAI file storage and then attaches it to the specified vector store (with chunking and optional metadata). |
+| 3 | **Associate existing file to VectorStore** | `fileId` + `vectorStoreID` | Skips upload and attaches an already-uploaded OpenAI file (identified by `fileId`) to the specified vector store. |
 
-### Input Resolution Rules
+### Input Mapping Requirements
 
-- If only `filename` is provided → Use Case 1 (upload only).
-- If `filename` and `vectorStoreID` are provided → Use Case 2 (upload + associate).
-- If `fileId` and `vectorStoreID` are provided → Use Case 3 (associate existing file).
-- If `fileId` is provided without `vectorStoreID`, the activity has nothing to do and will fail validation.
-- If both `filename` and `fileId` are provided, `filename` takes precedence (a new upload is performed).
+Input mappings are validated against the selected **Operation**. The following inputs must be mapped (non-empty expression in the mapper):
+
+- **Upload new file** → `filename` must be mapped.
+- **Upload new file and Associate to VectorStore** → `filename` and `vectorStoreID` must be mapped.
+- **Associate existing file to VectorStore** → `fileId` and `vectorStoreID` must be mapped.
+
+A validation error is raised in Flogo Studio when a required input is not mapped for the chosen operation.
 
 ## Prerequisites
 
@@ -36,12 +38,23 @@ The Upload File activity requires the following connection and configuration set
 
 | Setting | Type | Required | Default | Description |
 |---------|------|----------|---------|-------------|
+| **Operation** | String | Yes | "Upload new file" | The operation to perform. Selects one of the three supported use cases and drives input mapping validation. |
 | **API Endpoint URL** | String | Yes | - | The base URL for the OpenAI API. Typically `https://api.openai.com/v1`. Supports app properties. |
 | **OpenAI API Key** | String | Yes | - | Your OpenAI API authentication key required for file operations. Supports app properties for secure storage. |
 | **Purpose** | String | Yes | "assistants" | The intended purpose of the uploaded file. Determines how OpenAI processes and uses the file. |
 | **Maximum Chunk Size Tokens** | Integer | No | 800 | Maximum number of tokens per chunk when adding to vector store. Range: 100-4096. |
 | **Chunk Overlap Tokens** | Integer | No | 400 | Number of tokens that overlap between adjacent chunks for better context preservation. |
 | **Timeout in Seconds** | Integer | Yes | 300 | Upload timeout duration in seconds. Increase for large files or slow connections. |
+
+### Operation Options
+
+The **Operation** setting accepts the following values:
+
+| Operation | Description |
+|-----------|-------------|
+| `Upload new file` | Upload a local file to OpenAI file storage only. |
+| `Upload new file and Associate to VectorStore` | Upload a local file and attach it to a vector store. |
+| `Associate existing file to VectorStore` | Attach an already-uploaded OpenAI file to a vector store. |
 
 ### Purpose Options
 
@@ -58,6 +71,7 @@ The **Purpose** setting accepts the following values:
 
 ### Configuration Example
 ```
+Operation: Upload new file
 API Endpoint URL: https://api.openai.com/v1
 OpenAI API Key: sk-your-openai-api-key-here
 Purpose: assistants
@@ -72,9 +86,9 @@ The Upload File activity accepts the following input parameters:
 
 | Input | Type | Required | Description |
 |-------|------|----------|-------------|
-| **filename** | String | Conditional | Full path to the local file to upload. Required for Use Cases 1 and 2. Must be accessible from the Flogo runtime environment. |
-| **fileId** | String | Conditional | Identifier of an existing OpenAI file. Required for Use Case 3 (associating an already-uploaded file with a vector store). |
-| **vectorStoreID** | String | Conditional | Identifier of the OpenAI vector store the file is added to (with chunking). Required for Use Cases 2 and 3. Leave empty for Use Case 1 (upload only). |
+| **filename** | String | Conditional | Full path to the local file to upload. Required when **Operation** is `Upload new file` or `Upload new file and Associate to VectorStore`. Must be accessible from the Flogo runtime environment. |
+| **fileId** | String | Conditional | Identifier of an existing OpenAI file. Required when **Operation** is `Associate existing file to VectorStore`. |
+| **vectorStoreID** | String | Conditional | Identifier of the OpenAI vector store the file is added to (with chunking). Required when **Operation** is `Upload new file and Associate to VectorStore` or `Associate existing file to VectorStore`. |
 | **fileAttributes** | Object | No | Custom metadata key-value pairs to associate with the file when adding to a vector store. Ignored for Use Case 1. |
 
 ### Input Guidelines
@@ -163,10 +177,11 @@ The activity uses a static chunking strategy with the following parameters:
 
 ### Use Case 1 — Upload File Only
 
-Upload a document to OpenAI file storage without attaching it to any vector store. Provide only `filename`:
+Upload a document to OpenAI file storage without attaching it to any vector store. Set **Operation** to `Upload new file` and map `filename`:
 
 ```
 Settings:
+- Operation: "Upload new file"
 - Purpose: "assistants"
 - Timeout: 300
 
@@ -179,10 +194,11 @@ Inputs:
 
 ### Use Case 2 — Upload File and Associate with a Vector Store
 
-Upload a document and add it to a vector store with chunking and metadata. Provide `filename` and `vectorStoreID`:
+Upload a document and add it to a vector store with chunking and metadata. Set **Operation** to `Upload new file and Associate to VectorStore` and map `filename` and `vectorStoreID`:
 
 ```
 Settings:
+- Operation: "Upload new file and Associate to VectorStore"
 - Purpose: "assistants"
 - Max Chunk Size Tokens: 1000
 - Chunk Overlap Tokens: 200
@@ -200,10 +216,11 @@ Inputs:
 
 ### Use Case 3 — Associate an Existing OpenAI File with a Vector Store
 
-Attach a file that has already been uploaded to OpenAI to a vector store. Provide `fileId` and `vectorStoreID` (no `filename`):
+Attach a file that has already been uploaded to OpenAI to a vector store. Set **Operation** to `Associate existing file to VectorStore` and map `fileId` and `vectorStoreID`:
 
 ```
 Settings:
+- Operation: "Associate existing file to VectorStore"
 - Purpose: "assistants"
 - Max Chunk Size Tokens: 1000
 - Chunk Overlap Tokens: 200

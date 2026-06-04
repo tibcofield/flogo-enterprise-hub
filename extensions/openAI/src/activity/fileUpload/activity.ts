@@ -32,37 +32,53 @@ export class FileUploadActivityContribution extends WiServiceHandlerContribution
 
 
 
-    // validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
-    //     const vResult = ValidationResult.newValidationResult();
+    validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
+        const vResult = ValidationResult.newValidationResult();
 
-    //     if (fieldName === "filename") {
-    //         const filename = context.getField("filename");
-    //         if (filename && filename.value === "justatest" ){
-    //             return vResult.setError("OPENAI-FILE-UPLOAD-1002",
-    //                  "The 'filename' field cannot be empty or whitespace or even justatest");
+        // Only validate input mapping fields here.
+        if (fieldName !== "filename" && fieldName !== "fileId" && fieldName !== "vectorStoreID") {
+            return null;
+        }
 
-    //         }
-    //     }
-    
-    //     return null;
-    // }
+        const operationField = context.getField("operation");
+        const operation = operationField && operationField.value ? String(operationField.value) : "";
+
+        const isMapped = (inputName: string): boolean => {
+            const mappings = context.inputMappings && (context.inputMappings as any).mappings;
+            if (!mappings) {
+                return false;
+            }
+            const entry = mappings["$INPUT['" + inputName + "']"];
+            if (!entry) {
+                return false;
+            }
+            const expr = (entry as any).expression;
+            return expr !== null && expr !== undefined && String(expr).trim() !== "";
+        };
+
+        // Required fields per operation.
+        let required: string[] = [];
+        if (operation === "Upload new file") {
+            required = ["filename"];
+        } else if (operation === "Upload new file and Associate to VectorStore") {
+            required = ["filename", "vectorStoreID"];
+        } else if (operation === "Associate existing file to VectorStore") {
+            required = ["fileId", "vectorStoreID"];
+        } else {
+            return null;
+        }
+
+        const isRequired = required.indexOf(fieldName) >= 0;
+
+        if (isRequired && !isMapped(fieldName)) {
+            return vResult.setError("OPENAI-FILE-UPLOAD-1001",
+                "'" + fieldName + "' is required when Operation is '" + operation + "'.");
+        }
+
+        return null;
+    }
      
-    //     const val = (n: string): string => {
-    //         const f = context.getField(n);
-    //         return f && f.value !== null && f.value !== undefined ? String(f.value).trim() : "";
-    //     };
-
-    //     if (fieldName === "filename") {
-    //         const filename = val("filename");
-    //         // if (filename) {
-    //             return vResult.setError("OPENAI-FILE-UPLOAD-1002",
-    //                  "The 'filename' field cannot be empty or whitespace.");
-    //         // }
-    //     }
-
-    //     // Cross-field rule for the input mapper: exactly one source of the
-    //     // OpenAI file is required. Either `filename` (local file to upload)
-    //     // or `fileId` (already-uploaded OpenAI file to reuse) must be mapped.
+  
        
 
        

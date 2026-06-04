@@ -25,7 +25,7 @@
       "id": "AppStartupTrigger",
       "handlers": [
         {
-          "description": "",
+          "description": "Add description",
           "action": {
             "ref": "github.com/project-flogo/flow",
             "settings": {
@@ -42,7 +42,7 @@
       "id": "flow:File_upload_to_only",
       "data": {
         "name": "File upload to only",
-        "description": "",
+        "description": "Add description",
         "links": [
           {
             "id": 1,
@@ -54,16 +54,16 @@
           {
             "id": 2,
             "from": "Mapper",
-            "to": "UploadFile",
+            "to": "FileUpload",
             "type": "label",
-            "label": "Mapper to UploadFile"
+            "label": "Mapper to FileUpload"
           },
           {
             "id": 3,
-            "from": "UploadFile",
+            "from": "FileUpload",
             "to": "LogOutput",
             "type": "label",
-            "label": "UploadFile to LogMessage1"
+            "label": "FileUpload to LogOutput"
           },
           {
             "id": 4,
@@ -129,8 +129,8 @@
             }
           },
           {
-            "id": "UploadFile",
-            "name": "UploadFile",
+            "id": "FileUpload",
+            "name": "FileUpload",
             "description": "This activity uploads files to OpenAI file store",
             "settings": {
               "retryOnError": {
@@ -143,22 +143,16 @@
               "settings": {
                 "endPointURL": "=$property[\"OPENAI_API_ENDPOINT_URL\"]",
                 "apiKey": "=$property[\"OPENAI_API_KEY\"]",
+                "operation": "Upload new file",
                 "purpose": "assistants",
                 "maxChunkSizeTokens": 800,
                 "chunkOverlapTokens": 400,
                 "timeoutSeconds": 300
               },
               "input": {
-                "filename": "=$activity[Mapper].output.filename",
-                "fileId": "",
-                "vectorStoreID": "",
-                "fileAttributes": {
-                  "mapping": {
-                    "@foreach($activity[Mapper].output.attributes,attributes)": {
-                      "=": "$loop"
-                    }
-                  }
-                }
+                "filename": "",
+                "fileId": "f-1",
+                "vectorStoreID": "vs-1"
               }
             }
           },
@@ -171,7 +165,7 @@
               "input": {
                 "Log Level": "INFO",
                 "flowInfo": false,
-                "message": "=string.concat(\"id: \",$activity[UploadFile].id, \" object: \", $activity[UploadFile].object)",
+                "message": "=string.concat(\"id: \",$activity[FileUpload].id, \" object: \", $activity[FileUpload].object)",
                 "logLevel": ""
               }
             }
@@ -185,7 +179,7 @@
             }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUsInkiOjkzfSwiTWFwcGVyIjp7IngiOjE4NiwieSI6ODl9LCJVcGxvYWRGaWxlIjp7IngiOjQ1NiwieSI6OTN9LCJMb2dPdXRwdXQiOnsieCI6NzM5LCJ5Ijo5N30sIlJldHVybiI6eyJ4Ijo5ODcsInkiOjk1fX0=",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUsInkiOjkzfSwiTWFwcGVyIjp7IngiOjE4NiwieSI6ODl9LCJGaWxlVXBsb2FkIjp7IngiOjQ0MSwieSI6MTAyfSwiTG9nT3V0cHV0Ijp7IngiOjczOSwieSI6OTd9LCJSZXR1cm4iOnsieCI6OTg3LCJ5Ijo5NX19",
         "metadata": {
           "input": [],
           "output": [],
@@ -202,6 +196,11 @@
     },
     {
       "name": "OPENAI_API_KEY",
+      "type": "string",
+      "value": "REPLACE ME"
+    },
+    {
+      "name": "VECTORSTORE_ID",
       "type": "string",
       "value": "REPLACE ME"
     }
