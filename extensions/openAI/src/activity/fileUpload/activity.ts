@@ -35,13 +35,18 @@ export class FileUploadActivityContribution extends WiServiceHandlerContribution
     validate = (fieldName: string, context: IActivityContribution): Observable<IValidationResult> | IValidationResult => {
         const vResult = ValidationResult.newValidationResult();
 
-        // Only validate input mapping fields here.
-        if (fieldName !== "filename" && fieldName !== "fileId" && fieldName !== "vectorStoreID") {
+        // Validate once, on the Settings dropdown. The framework re-runs this
+        // whenever "operation" changes and on Save, and the message renders
+        // inline under the Operation field.
+        if (fieldName !== "operation") {
             return null;
         }
 
         const operationField = context.getField("operation");
         const operation = operationField && operationField.value ? String(operationField.value) : "";
+        if (!operation) {
+            return null;
+        }
 
         const isMapped = (inputName: string): boolean => {
             const mappings = context.inputMappings && (context.inputMappings as any).mappings;
@@ -56,11 +61,10 @@ export class FileUploadActivityContribution extends WiServiceHandlerContribution
             return expr !== null && expr !== undefined && String(expr).trim() !== "";
         };
 
-        // Required fields per operation.
         let required: string[] = [];
         if (operation === "Upload new file") {
             required = ["filename"];
-        } else if (operation === "Upload new file and Associate to VectorStore") {
+        } else if (operation === "Upload new file and associate to VectorStore") {
             required = ["filename", "vectorStoreID"];
         } else if (operation === "Associate existing file to VectorStore") {
             required = ["fileId", "vectorStoreID"];
@@ -68,11 +72,12 @@ export class FileUploadActivityContribution extends WiServiceHandlerContribution
             return null;
         }
 
-        const isRequired = required.indexOf(fieldName) >= 0;
-
-        if (isRequired && !isMapped(fieldName)) {
-            return vResult.setError("OPENAI-FILE-UPLOAD-1001",
-                "'" + fieldName + "' is required when Operation is '" + operation + "'.");
+        const missing = required.filter((f) => !isMapped(f));
+        if (missing.length > 0) {
+            return vResult.setError(
+                "OPENAI-FILE-UPLOAD-1001",
+                "Operation '" + operation + "' requires the following Input(s) to be mapped: " + missing.join(", ") + "."
+            );
         }
 
         return null;

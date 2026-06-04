@@ -143,7 +143,7 @@
               "settings": {
                 "endPointURL": "=$property[\"OPENAI_API_ENDPOINT_URL\"]",
                 "apiKey": "=$property[\"OPENAI_API_KEY\"]",
-                "operation": "Upload new file",
+                "operation": "Upload new file and associate to VectorStore",
                 "purpose": "assistants",
                 "maxChunkSizeTokens": 800,
                 "chunkOverlapTokens": 400,
@@ -151,8 +151,8 @@
               },
               "input": {
                 "filename": "",
-                "fileId": "f-1",
-                "vectorStoreID": "vs-1"
+                "fileId": "file-3",
+                "vectorStoreID": "vs-3"
               }
             }
           },

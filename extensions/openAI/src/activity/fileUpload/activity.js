@@ -35,11 +35,14 @@ var FileUploadActivityContribution = (function (_super) {
         _this.http = http;
         _this.validate = function (fieldName, context) {
             var vResult = wi_contrib_1.ValidationResult.newValidationResult();
-            if (fieldName !== "filename" && fieldName !== "fileId" && fieldName !== "vectorStoreID") {
+            if (fieldName !== "operation") {
                 return null;
             }
             var operationField = context.getField("operation");
             var operation = operationField && operationField.value ? String(operationField.value) : "";
+            if (!operation) {
+                return null;
+            }
             var isMapped = function (inputName) {
                 var mappings = context.inputMappings && context.inputMappings.mappings;
                 if (!mappings) {
@@ -56,7 +59,7 @@ var FileUploadActivityContribution = (function (_super) {
             if (operation === "Upload new file") {
                 required = ["filename"];
             }
-            else if (operation === "Upload new file and Associate to VectorStore") {
+            else if (operation === "Upload new file and associate to VectorStore") {
                 required = ["filename", "vectorStoreID"];
             }
             else if (operation === "Associate existing file to VectorStore") {
@@ -65,9 +68,9 @@ var FileUploadActivityContribution = (function (_super) {
             else {
                 return null;
             }
-            var isRequired = required.indexOf(fieldName) >= 0;
-            if (isRequired && !isMapped(fieldName)) {
-                return vResult.setError("OPENAI-FILE-UPLOAD-1001", "'" + fieldName + "' is required when Operation is '" + operation + "'.");
+            var missing = required.filter(function (f) { return !isMapped(f); });
+            if (missing.length > 0) {
+                return vResult.setError("OPENAI-FILE-UPLOAD-1001", "Operation '" + operation + "' requires the following Input(s) to be mapped: " + missing.join(", ") + ".");
             }
             return null;
         };
