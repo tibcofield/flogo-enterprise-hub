@@ -297,7 +297,7 @@
     {
       "name": "LLMClient.openai.API_Key",
       "type": "string",
-      "value": "SECRET:Bb1BAAYtyrreY6DhhjafNa2koj1d39rcER4ccCGSUabZjjnJ2pz5L4tmTo86NiWffhlzyl8YM5nnt8cnkTj2nq6jcVRoZLavtzXMcK2wXcTnOmu6jd3ZjPwOnRMKNRydAgpO5/X3+tvDQlTMmwhSBZnI5mIVMCloRjZ2EvalVT4Z6LAl6a4gibmQluSagXAOPFQvfLSJmr/LEyD4GqWH7AKbIsw9e3lcSIGNNv+BzYy3Z1pJ"
+      "value": ""
     },
     {
       "name": "LLMClient.openai.LLM_Model",
@@ -327,12 +327,12 @@
     {
       "name": "LLMClient.A2A.Fraud.Auth_Token",
       "type": "string",
-      "value": "SECRET:wmDnRa6vW6o0ZA0EWI2Oxxtaj/blnhty1tAlwQeig2GiW5BlHxLBhK6NxMQ="
+      "value": ""
     },
     {
       "name": "LLMClient.MCP.Policy.JWT_Token",
       "type": "string",
-      "value": "SECRET:uG6GsT2sSEudwpxz2Twfgh8kkDy/HRpR+1snRxLHcemXvIS45gvq+jCaEXD64EDpEEvVRJq6jvGrrPZNjGuxm5qnui+J/cakqpGI2naRzmN5A3GXAd1zwGpJkn7vAJhrfXdMqXRbalX5fJIDDH3+IhYnMaVo8N+/rnsmGCpixyvE4nU15mFcw32U/c+wbYcDyMJsXfm3xSwz2w2WXAf46QCXApFrWnVqkMFnNIu+svA95n7KPjQeAAmFzsa4VGhD0qxRcdbpkWgbgPnnEwhxjB54hbBoGS8Gq1UXhdLkK4XMKCEWZpUnBNi6CqmMPptRKbSVY8GKtJR1UGzAk2IXEeAqwsF7dGwHkSx8TIAOIGE="
+      "value": ""
     }
   ],
   "connections": {
@@ -348,7 +348,7 @@
         "serverUrl": "http://localhost:9603/mcp",
         "httpTransportType": "streamable",
         "authType": "Token",
-        "authToken": "SECRET:mqbLn+kBTM2b5t+lB+0wkTTz5Xq4dSBkwmH4dsP+1lJWJm7ryOMtu9V4gr3iGVBzFx9HOKE4Dl8gfDNuF9wTo4JmSPeAApfNU7DfV2stIu6AZ6yCsZ8zmkBRV6o2ELWuH3cDvC8TokMzBbYwzZwF6WeN5naosOCGkjyv/Jl3ap4Cn0Jc/ejDEWm637rlGpULsvGMTxBsQKQ1zpvZYjPgLbzo1EVNHe+P9rtKr2YASU8NzM+428GJkG+ycvw9dt2zyYKZ6gM3Th9BDKyP6kW8swHPNfCoHEnPjgk2DYO/Qqe5rNo6lCHFEkGD5bxsGha2Ts9VAE87CstX3A4MFZwDKfQdp8wc5BFtDuKdD2kBig0=",
+        "authToken": "",
         "selectedTools": ""
       }
     },
@@ -362,7 +362,7 @@
         "description": "FraudDetection A2A Server",
         "serverUrl": "http://localhost:9604",
         "authType": "Static Token",
-        "authToken": "SECRET:ZqEX4MHQKuoyo5u9QDkOCsQfDA/W7im/3sozIt4eAns52JYtB+CQALFCfCo="
+        "authToken": ""
       }
     }
   },

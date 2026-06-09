@@ -385,7 +385,7 @@
     {
       "name": "FlogoMcpServer.JWT_Secret",
       "type": "string",
-      "value": "SECRET:Vgdj6Wrv6vMVQL8uz6L/4KsJZCysZNbHIIU="
+      "value": ""
     }
   ],
   "connections": {},

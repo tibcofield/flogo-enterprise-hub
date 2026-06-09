@@ -521,7 +521,7 @@
     {
       "name": "AgenticAI.openai.API_Key",
       "type": "string",
-      "value": "SECRET:fJ8ri/I18mIjqWARxTL2jm2i7KFYv3gbCZnrpDHIvmnslbmTHAVBflmSlbp47z2K7R8MZcQwz3axBCV0StuUefFhoEI2GfjLFFo2OUS7dOyRTxZ3uC3uQzTCrZ2pFIvYZU/UcIpvZ4ypep/KLOEdrFyEIOrg/lOZRhoqMyiX9VJFHVgjyPZHb8tSihmtStBYgTLjNJi23WrPeO0SOhIgbgTCjYKL3MibgBtb3cw+DGUqJoMD"
+      "value": ""
     },
     {
       "name": "AgenticAI.openai.LLM_Base_URL",
@@ -589,7 +589,7 @@
         "description": "Connection to the TravelItineraryPlanner A2A Server on port 9898",
         "serverUrl": "http://localhost:9898",
         "authType": "Static Token",
-        "authToken": "SECRET:b5vTQ/Gp3JgkQ2rE4xpQwUT+be9nY9fY6Fu/cyNtURMQGEC04w0WZXAi4nE="
+        "authToken": ""
       }
     }
   },

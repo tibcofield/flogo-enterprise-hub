@@ -563,7 +563,7 @@
     {
       "name": "AgenticAI.openai.API_Key",
       "type": "string",
-      "value": "SECRET:UGx4oPD0pIrGycLkJJl5rDqvgXPkDpR2b8FxM5fou0vEdznxyR0F4bfEN2x25yA3e26WtEVQ2KCA5b+ETXnhcz+ZmN5zOkXalA4iUGBcyP/reSoxuhagopIl9F45zm1EIW9/VtvdJAjloZ8+rEjb2epJEaYbkYbIF0Hw9EuimdqPlIzLz6phDkTeq4Z4eL1O8T643G25OG7S05XN30TMuhXVcraBedKAvbLiBCftrYY/VsKH"
+      "value": ""
     },
     {
       "name": "AgenticAI.openai.LLM_Base_URL",
@@ -613,7 +613,7 @@
     {
       "name": "A2A.AuthToken",
       "type": "string",
-      "value": "SECRET:JKMpS5I3fbjcNGqtwZOBZITlLKW2GFCqVrtd5t81aoHZLHtMg/3AFVd4UYg="
+      "value": ""
     },
     {
       "name": "A2A.port",
