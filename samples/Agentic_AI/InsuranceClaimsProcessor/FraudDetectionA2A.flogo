@@ -17,7 +17,7 @@
     {
       "ref": "#agent",
       "name": "flogo-agenticai-agent",
-      "description": "Fraud detection A2A Server agent on port 9504.",
+      "description": "Fraud detection A2A Server agent on port 9604.",
       "settings": {
         "llmProviderConnection": "conn://da22bbbb-cccc-dddd-eeee-ffff00000020",
         "agentName": "=$property[\"Trigger_Settings.AgentName\"]",
@@ -356,6 +356,11 @@
       "name": "A2A.AuthToken",
       "type": "string",
       "value": ""
+    },
+    {
+      "name": "A2A.ServerPort",
+      "type": "string",
+      "value": "9604"
     }
   ],
   "connections": {

@@ -248,8 +248,8 @@
             "output": {
               "toolParams": {
                 "type": "json",
-                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"tripName\":{\"type\":\"string\"},\"travelerName\":{\"type\":\"string\"},\"startDate\":{\"type\":\"string\"},\"endDate\":{\"type\":\"string\"},\"selectedFlightIds\":{\"type\":\"string\"},\"selectedHotelId\":{\"type\":\"string\"},\"notes\":{\"type\":\"string\"}}}",
-                "fe_metadata": "{\"tripName\": \"Paris Summer Getaway\", \"travelerName\": \"Jane Doe\", \"startDate\": \"2026-07-13\", \"endDate\": \"2026-07-17\", \"selectedFlightIds\": \"FL-001\", \"selectedHotelId\": \"HTL-003\", \"notes\": \"Window seat preferred\"}"
+                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"tripName\":{\"type\":\"string\"},\"travelerName\":{\"type\":\"string\"},\"startDate\":{\"type\":\"string\"},\"endDate\":{\"type\":\"string\"},\"selectedFlightIds\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"selectedHotelId\":{\"type\":\"string\"},\"notes\":{\"type\":\"string\"}}}",
+                "fe_metadata": "{\"tripName\": \"Paris Summer Getaway\", \"travelerName\": \"Jane Doe\", \"startDate\": \"2026-07-13\", \"endDate\": \"2026-07-17\", \"selectedFlightIds\": [\"FL-001\"], \"selectedHotelId\": \"HTL-003\", \"notes\": \"Window seat preferred\"}"
               },
               "customGuardrailInput": {
                 "type": "json",
