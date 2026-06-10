@@ -89,6 +89,15 @@ An insurance claims processing pipeline demonstrating the **LLM Client Activity*
 
 ---
 
+### 7. [Dynamic Semantic Tool Selection at Scale](./DynamicSemanticToolSelectionAtScale/)
+**LLM Client Activity + AI Agent Activity + filteredToolNames + 3 MCP Servers (150 Tools)**
+
+An IT Service Desk orchestrator that handles natural-language requests across **150 tools** spread over three MCP Servers using a **two-step tool selection pattern**. Step 1: an LLM Client Activity reads a text catalog of all 150 tool names and returns a JSON array of relevant tools. Step 2: an AI Agent Activity receives the filtered tool names via `filteredToolNames` and executes only those tools. Includes a comparison app (`ITServiceDeskDirect.flogo`) that sends all 150 tools directly — demonstrating the OpenAI 128-tool API limit that the two-step pattern solves.
+
+**Highlights**: Two-step tool selection (LLMClient selector → Agent executor) · `filteredToolNames` input on AI Agent Activity · Text-based tool catalog bypasses API tool-count limits · 150 tools across 3 domains (Identity & Access, Infrastructure Monitoring, IT Ticketing) · Side-by-side comparison app proving the pattern is required at scale · Scales to hundreds or thousands of tools
+
+---
+
 ## Prerequisites
 
 - **TIBCO Flogo® 2.26.4 or later**. For more information, please refer [documentation](https://docs.tibco.com/pub/flogo/latest/doc/html/Default.htm#connectors/agentic-AI/agentic-AI-overview.htm)
