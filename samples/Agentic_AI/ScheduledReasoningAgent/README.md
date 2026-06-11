@@ -29,7 +29,7 @@ Step 1 — Data Fetch (LLMClient + MCP):
   [Calls get_team_performance → SalesDataMCPServer]
   [Calls get_product_revenue → SalesDataMCPServer]
   [Calls get_regional_breakdown → SalesDataMCPServer]
-  Combined data: revenue $2.45M, 1,247 orders, 5 reps...
+  Combined data: revenue $2.85M, 1,823 orders, 8 reps...
 
 Step 2 — Analysis (LLMClient, no MCP):
   [Reads Step 1 output, generates structured markdown report]
@@ -194,10 +194,10 @@ All tools take no arguments and return pre-populated mock data.
 
 | Tool | Returns |
 |---|---|
-| `get_weekly_sales_summary` | Total revenue ($2.45M), total orders (1,247), average order value ($1,964), revenue change vs. prior week (+12.3%), day-by-day breakdown |
-| `get_team_performance` | Per-rep revenue, deals closed, pipeline value, quota attainment %, week-over-week trend for 5 sales reps |
-| `get_product_revenue` | Revenue by product category (Enterprise Software, Cloud Services, Professional Services, Hardware), units sold, growth % |
-| `get_regional_breakdown` | Revenue by region (Northeast, Southeast, Midwest, West Coast), order count, average deal size, Q/Q growth trend |
+| `get_weekly_sales_summary` | Total revenue ($2.85M), total orders (1,823), average order value ($1,562), revenue change vs. prior week (+8.3%), day-by-day breakdown |
+| `get_team_performance` | Per-rep revenue, deals closed, pipeline value, quota attainment %, week-over-week trend for 8 sales reps |
+| `get_product_revenue` | Revenue by product category (Enterprise Platform License, Professional Services, Cloud Infrastructure, Support & Maintenance, Training & Certification, Add-on Modules), units sold, growth % |
+| `get_regional_breakdown` | Revenue by region (North America, Europe, Asia Pacific, Latin America, Middle East & Africa), order count, average deal size, Q/Q growth trend |
 
 ---
 

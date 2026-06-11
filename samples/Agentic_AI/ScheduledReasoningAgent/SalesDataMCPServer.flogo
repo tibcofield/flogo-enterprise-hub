@@ -24,7 +24,7 @@
         "serverVersion": "1.0.0",
         "serverType": "HTTP",
         "serverPort": "=$property[\"FlogoMcpServer.PORT\"]",
-        "statelessServer": false,
+        "statelessServer": true,
         "serverEndpointPath": "/mcp",
         "enableTLS": false,
         "serverCertificate": "",
@@ -41,10 +41,10 @@
             "resourceUri": "",
             "handlerName": "get_weekly_sales_summary",
             "handlerDescription": "Get the weekly sales performance summary including total revenue, total orders, average order value, revenue change versus prior week, and a day-by-day revenue breakdown for the past 7 days",
-            "readOnlyToolHint": false,
+            "readOnlyToolHint": true,
             "destructiveToolHint": false,
             "idempotentToolHint": false,
-            "openWorldToolHint": true
+            "openWorldToolHint": false
           },
           "action": {
             "ref": "github.com/project-flogo/flow",
@@ -83,10 +83,10 @@
             "resourceUri": "",
             "handlerName": "get_team_performance",
             "handlerDescription": "Get individual sales team member performance for the current week including revenue generated, deals closed, pipeline value, quota attainment percentage, and week-over-week trend for each team member",
-            "readOnlyToolHint": false,
+            "readOnlyToolHint": true,
             "destructiveToolHint": false,
             "idempotentToolHint": false,
-            "openWorldToolHint": true
+            "openWorldToolHint": false
           },
           "action": {
             "ref": "github.com/project-flogo/flow",
@@ -125,10 +125,10 @@
             "resourceUri": "",
             "handlerName": "get_product_revenue",
             "handlerDescription": "Get revenue breakdown by product category for the current week including revenue per category, units sold, average deal size, percentage of total revenue, and week-over-week growth trend",
-            "readOnlyToolHint": false,
+            "readOnlyToolHint": true,
             "destructiveToolHint": false,
             "idempotentToolHint": false,
-            "openWorldToolHint": true
+            "openWorldToolHint": false
           },
           "action": {
             "ref": "github.com/project-flogo/flow",
@@ -167,10 +167,10 @@
             "resourceUri": "",
             "handlerName": "get_regional_breakdown",
             "handlerDescription": "Get sales performance breakdown by geographic region for the current week including revenue per region, order count, average deal size, quarter-over-quarter trend, and quarterly target attainment",
-            "readOnlyToolHint": false,
+            "readOnlyToolHint": true,
             "destructiveToolHint": false,
             "idempotentToolHint": false,
-            "openWorldToolHint": true
+            "openWorldToolHint": false
           },
           "action": {
             "ref": "github.com/project-flogo/flow",
