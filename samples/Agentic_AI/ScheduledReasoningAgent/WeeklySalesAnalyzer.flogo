@@ -24,7 +24,7 @@
     {
       "ref": "#timer",
       "name": "tibco-wi-timer",
-      "description": "Scheduled trigger \u2014 runs the sales analysis every Monday at 8am.",
+      "description": "Scheduled trigger — runs the sales analysis every Monday at 8am.",
       "settings": {},
       "id": "WeeklySchedule",
       "handlers": [
@@ -346,7 +346,7 @@
               "ref": "#sendmail",
               "input": {
                 "Server": "=$property[\"Email.SMTP.Server\"]",
-                "Port": 587,
+                "Port": "=$property[\"Email.SMTP.Port\"]",
                 "authorizationType": "Basic",
                 "Username": "=$property[\"Email.SMTP.Username\"]",
                 "Password": "=$property[\"Email.SMTP.Password\"]",
@@ -630,7 +630,7 @@
               "ref": "#sendmail",
               "input": {
                 "Server": "=$property[\"Email.SMTP.Server\"]",
-                "Port": 587,
+                "Port": "=$property[\"Email.SMTP.Port\"]",
                 "authorizationType": "Basic",
                 "Username": "=$property[\"Email.SMTP.Username\"]",
                 "Password": "=$property[\"Email.SMTP.Password\"]",
@@ -745,12 +745,12 @@
     {
       "name": "LLMClient.dataFetchPrompt",
       "type": "string",
-      "value": "You are a data retrieval assistant. Your job is to gather comprehensive sales data for weekly analysis.\n\nUse the available MCP tools to retrieve:\n1. The weekly sales summary (total revenue, total orders, average order value)\n2. Team performance data (sales per team member)\n3. Product revenue breakdown (revenue per product category)\n4. Regional sales breakdown (performance by region)\n\nCall ALL FOUR tools to get complete data. Combine the results into a single, well-structured JSON summary. Do not analyze or interpret the data \u2014 just collect and organize it."
+      "value": "You are a data retrieval assistant. Your job is to gather comprehensive sales data for weekly analysis.\n\nUse the available MCP tools to retrieve:\n1. The weekly sales summary (total revenue, total orders, average order value)\n2. Team performance data (sales per team member)\n3. Product revenue breakdown (revenue per product category)\n4. Regional sales breakdown (performance by region)\n\nCall ALL FOUR tools to get complete data. Combine the results into a single, well-structured JSON summary. Do not analyze or interpret the data — just collect and organize it."
     },
     {
       "name": "LLMClient.analysisPrompt",
       "type": "string",
-      "value": "You are a senior sales performance analyst. You have received the latest weekly sales data. Produce a comprehensive Weekly Sales Performance Report with the following sections:\n\n1. **Executive Summary** (2-3 sentences highlighting the most important takeaway)\n2. **Key Metrics** \u2014 present as a markdown table: Total Revenue, Total Orders, Average Order Value, Top Region, Top Product Category\n3. **Team Performance Analysis** \u2014 Rank by revenue, highlight top performer and underperformers\n4. **Product Revenue Insights** \u2014 Revenue by category with percentage of total, identify growth and declining categories\n5. **Regional Analysis** \u2014 Revenue by region with quarter-over-quarter trend, flag regions above or below target\n6. **Actionable Recommendations** (3-5 bullet points)\n7. **Risk Flags** \u2014 Any concerning patterns\n\nFormat the entire report in clean markdown. Use tables where appropriate. Be specific \u2014 cite actual numbers from the data."
+      "value": "You are a senior sales performance analyst. You have received the latest weekly sales data. Produce a comprehensive Weekly Sales Performance Report with the following sections:\n\n1. **Executive Summary** (2-3 sentences highlighting the most important takeaway)\n2. **Key Metrics** — present as a markdown table: Total Revenue, Total Orders, Average Order Value, Top Region, Top Product Category\n3. **Team Performance Analysis** — Rank by revenue, highlight top performer and underperformers\n4. **Product Revenue Insights** — Revenue by category with percentage of total, identify growth and declining categories\n5. **Regional Analysis** — Revenue by region with quarter-over-quarter trend, flag regions above or below target\n6. **Actionable Recommendations** (3-5 bullet points)\n7. **Risk Flags** — Any concerning patterns\n\nFormat the entire report in clean markdown. Use tables where appropriate. Be specific — cite actual numbers from the data."
     },
     {
       "name": "LLMClient.openai.LLM_Provider",
@@ -765,7 +765,7 @@
     {
       "name": "LLMClient.APIKey",
       "type": "string",
-      "value": "SECRET:bT8pGZLwqgxrjuBc8L2hRWoWlA=="
+      "value": "SECRET:SSOyyY7nRz1B2LIsMRs8NVvCEQ=="
     },
     {
       "name": "LLMClient.htmlFormatPrompt",
@@ -784,8 +784,8 @@
     },
     {
       "name": "Email.SMTP.Port",
-      "type": "string",
-      "value": "587"
+      "type": "float64",
+      "value": 587
     },
     {
       "name": "Email.SMTP.Username",
@@ -805,7 +805,7 @@
     {
       "name": "Email.SMTP.Password",
       "type": "string",
-      "value": "SECRET:2VlDHH3o4YwX8AFIfw2V2u6+9w=="
+      "value": "SECRET:M9fU2rzi6u0WrMIbCpG/XVnJ7A=="
     }
   ],
   "connections": {

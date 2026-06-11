@@ -142,17 +142,24 @@ Sending 150 tool definitions to an LLM in every request is expensive, degrades r
 {
   "ref": "#llmclientactivity",
   "settings": {
-    "responseType": "JSON",
-    "responseJsonSchema": "{\"type\":\"array\",\"items\":{\"type\":\"string\"}}"
+    "responseType": "JSON"
   },
   "input": {
     "systemPrompt": "You are a tool selection assistant. Below is the catalog of 150 tools...\n## Identity & Access Management\n- reset_password: Reset a user's password...\n- unlock_account: Unlock a locked user account...\n...",
     "llmConfiguration": { "mapping": { "provider": "OpenAI", "model": "gpt-4o", "temparature": 0.3 } }
+  },
+  "schemas": {
+    "output": {
+      "responseJSONSchema": {
+        "type": "json",
+        "value": "{\"type\":\"array\",\"items\":{\"type\":\"string\"}}"
+      }
+    }
   }
 }
 ```
 
-The `responseType: "JSON"` with `responseJsonSchema` ensures the LLM returns a validated JSON array of strings, which maps directly to the `filteredToolNames` input on the Agent Activity.
+The `responseType: "JSON"` with `responseJSONSchema` (under `schemas.output`) ensures the LLM returns a validated JSON array of strings, which maps directly to the `filteredToolNames` input on the Agent Activity.
 
 Output: `["reset_password", "unlock_account", "create_ticket"]`
 
