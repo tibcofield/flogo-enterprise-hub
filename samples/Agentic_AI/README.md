@@ -98,6 +98,15 @@ An IT Service Desk orchestrator that handles natural-language requests across **
 
 ---
 
+### 8. [Scheduled Reasoning Agent](./ScheduledReasoningAgent/)
+**LLM Client Activity + Timer Trigger + MCP Server + File Write + Send Mail**
+
+A timer-triggered autonomous agent that fires every Monday at 8am, queries a Sales Data MCP Server, generates a structured analysis report, converts it to a professional styled HTML document via a third LLM call, saves it to disk, and emails it to stakeholders — all with zero human interaction. A REST trigger is also provided for on-demand testing. Demonstrates three-step LLM chaining with different temperatures per step, File Write for report persistence, and Send Mail for automated delivery.
+
+**Highlights**: Timer trigger with cron scheduling (`0 0 8 ? * MON`) · Three chained LLM Client Activity calls (data fetch → analysis → HTML formatting) · Different temperatures per step (0.2, 0.5, 0.3) · File Write Activity saves styled HTML report · Send Mail Activity delivers via SMTP/TLS with HTML body and file attachment · MCP Server with 4 no-argument sales data tools · REST trigger for manual testing · Print-friendly HTML output (Save as PDF)
+
+---
+
 ## Prerequisites
 
 - **TIBCO Flogo® 2.26.4 or later**. For more information, please refer [documentation](https://docs.tibco.com/pub/flogo/latest/doc/html/Default.htm#connectors/agentic-AI/agentic-AI-overview.htm)
