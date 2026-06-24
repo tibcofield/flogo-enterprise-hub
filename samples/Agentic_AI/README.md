@@ -107,6 +107,15 @@ A timer-triggered autonomous agent that fires every Monday at 8am, queries a Sal
 
 ---
 
+### 9. [IT Help Desk Advisor with Memory Conversation Store and Dynamic MCP/A2A Configuration](./LLMClient-Dynamic-Config-And-Memory/)
+**LLM Client Activity + Memory Conversation Store + Dynamic mcpServerConfigs + Dynamic a2aServerConfigs**
+
+A multi-turn IT help desk advisor demonstrating two **new features in Flogo 2.26.5**: the **Memory Conversation Store** (in-memory multi-turn conversation history keyed by `conversationId`) and **Dynamic MCP/A2A Server Configuration** (`mcpServerConfigs` and `a2aServerConfigs` as activity inputs instead of connection-level settings). An employee describes a WiFi issue, receives KB-guided troubleshooting steps across multiple turns, and escalates to a support ticket — all within one continuous conversation.
+
+**Highlights**: Memory Conversation Store with `memoryMaxSize: 20` and query-param `sessionId` as `conversationId` · Dynamic `mcpServerConfigs` input mapping (no MCP connection resource) · Dynamic `a2aServerConfigs` input mapping (no A2A connection resource) · Property-resolved server names and URLs for environment portability · Knowledge Base MCP Server with search and troubleshooting tools · A2A Ticket Service agent for escalation · Multi-turn conversation memory across WebSocket messages
+
+---
+
 ## Prerequisites
 
 - **TIBCO Flogo® 2.26.4 or later**. For more information, please refer [documentation](https://docs.tibco.com/pub/flogo/latest/doc/html/Default.htm#connectors/agentic-AI/agentic-AI-overview.htm)
