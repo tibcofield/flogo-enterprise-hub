@@ -392,7 +392,7 @@
                 "mappings": {
                   "response": {
                     "mapping": {
-                      "data": "\"SHIPPING ALERTS:\n[CRITICAL] ORD-2026-78845 — Package stuck at customs (Miami hub) for 5 days. Customer contacted support twice. Escalation required.\n[CRITICAL] ORD-2026-78902 — Delivery attempt failed: incorrect address on file. Package returning to sender. Contact customer immediately.\n[WARNING] ORD-2026-78867 — Carrier reports weather delay in Pacific Northwest. New ETA: 2 days later than original estimate.\n[WARNING] ORD-2026-78910 — Fragile item shipped without protective packaging. Monitor for damage claim.\"",
+                      "data": "SHIPPING ALERTS: [CRITICAL] ORD-2026-78845 — Package stuck at customs (Miami hub) for 5 days. Customer contacted support twice. Escalation required. | [CRITICAL] ORD-2026-78902 — Delivery attempt failed: incorrect address on file. Package returning to sender. Contact customer immediately. | [WARNING] ORD-2026-78867 — Carrier reports weather delay in Pacific Northwest. New ETA: 2 days later than original estimate. | [WARNING] ORD-2026-78910 — Fragile item shipped without protective packaging. Monitor for damage claim.",
                       "audience": [
                         "user"
                       ],
@@ -404,7 +404,7 @@
             }
           }
         ],
-        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUwLCJ5Ijo1MH0sIlJldHVybiI6eyJ4IjoyNTcsInkiOjU4fX0=",
+        "fe_metadata": "eyJTdGFydEFjdGl2aXR5Ijp7IngiOjUwLCJ5Ijo1MH0sIlJldHVybiI6eyJ4IjoyNTYsInkiOjQ3fX0=",
         "metadata": {
           "input": [
             {
