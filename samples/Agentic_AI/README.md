@@ -120,7 +120,7 @@ A multi-turn IT help desk advisor demonstrating two **new features in Flogo 2.26
 
 - **TIBCO Flogo® 2.26.4 or later**. For more information, please refer [documentation](https://docs.tibco.com/pub/flogo/latest/doc/html/Default.htm#connectors/agentic-AI/agentic-AI-overview.htm)
 - An API key for your chosen LLM provider (OpenAI, Gemini, or Anthropic)
-- A WebSocket client for testing: [Postman](https://www.postman.com/) or [websocat](https://github.com/vi/websocat)
+- A WebSocket client for testing: [Flogo Chatbot](./Chatbot/) (included — see below) or [websocat](https://github.com/vi/websocat)
 
 ## Quick Start
 
@@ -128,6 +128,17 @@ A multi-turn IT help desk advisor demonstrating two **new features in Flogo 2.26
 2. Open the `flogo-enterprise-hub` folder in VS Code with the Flogo extension installed.
 3. Navigate to `samples/Agentic_AI/<sample-name>/` and click the `.flogo` file.
 4. Configure your LLM Provider connection with your API key.
-5. Run the app from VS Code and connect via WebSocket to test.
+5. Run the app from VS Code and connect via the [Flogo Chatbot](./Chatbot/) or websocat to test.
+
+### Flogo Chatbot — Browser-Based WebSocket Test Client
+
+A ready-to-use chat UI is included in [`Chatbot/`](./Chatbot/) for testing any sample that exposes a WebSocket endpoint:
+
+```bash
+cd samples/Agentic_AI/Chatbot
+npm install
+npm start
+# Open http://localhost:3000, update the WebSocket URL if needed, and click Connect
+```
 
 See each sample's individual `README.md` for detailed configuration and usage instructions.
