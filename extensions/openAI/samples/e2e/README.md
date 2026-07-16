@@ -217,7 +217,7 @@ This flow is **automatically triggered** — no manual request is required. As s
 
 ## 9. Clean Up
 
-To avoid lingering OpenAI resources / billing, use the helper scripts under [`bin/`](../../../../bin/):
+To avoid lingering OpenAI resources / billing, use the helper scripts under [`bin/`]
 
 - `openai-filelist-openai` — list uploaded files
 - `openai-filedelete-openai` — delete uploaded files
