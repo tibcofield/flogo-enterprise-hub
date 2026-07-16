@@ -25,6 +25,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("rxjs/add/observable/of");
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var wi_contrib_1 = require("wi-studio/app/contrib/wi-contrib");
@@ -35,7 +36,7 @@ var ImageCreateActivityContribution = (function (_super) {
         _this.http = http;
         _this.value = function (fieldName, context) {
             if (fieldName === "model") {
-                return ImageCreateActivityContribution_1.SUPPORTED_MODELS;
+                return ImageCreateActivityContribution_1.MODELS_URL;
             }
             if (fieldName === "size") {
                 return ["", "1024x1024", "1024x1536", "1536x1024", "auto"];
@@ -137,7 +138,7 @@ var ImageCreateActivityContribution = (function (_super) {
     }
     ImageCreateActivityContribution_1 = ImageCreateActivityContribution;
     var ImageCreateActivityContribution_1;
-    ImageCreateActivityContribution.SUPPORTED_MODELS = [
+    ImageCreateActivityContribution.MODELS_URL = [
         "gpt-image-1",
         "gpt-image-1-mini",
         "gpt-image-1.5",
