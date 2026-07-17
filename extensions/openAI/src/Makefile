@@ -76,7 +76,7 @@ env-check:
 	fi
 	@for d in activity/*/; do \
 		if [ -f "$$d/.env" ]; then \
-			echo "Per-package override: $$d.env"; \
+			echo "Per-package override: $$d/.env"; \
 		fi; \
 	done
 

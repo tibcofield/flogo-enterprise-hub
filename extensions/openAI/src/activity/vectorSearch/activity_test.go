@@ -13,10 +13,24 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/option"
 	"github.com/project-flogo/core/activity"
 	"github.com/project-flogo/core/support/test"
 	"github.com/stretchr/testify/assert"
 )
+
+// newTestActivity builds an Activity the same way New() does, so tests that
+// bypass the Flogo init path still get a fully initialized OpenAI client.
+func newTestActivity(s *Settings) *Activity {
+	return &Activity{
+		Settings: s,
+		oaiClient: openai.NewClient(
+			option.WithAPIKey(s.ApiKey),
+			option.WithBaseURL(s.EndPointURL),
+		),
+	}
+}
 
 // Load environment variables from .env file
 func init() {
@@ -102,9 +116,7 @@ func TestSearchDocumentsDefault(t *testing.T) {
 	// Initialize settings from environment variables
 	s := populateSettingsFromEnv()
 
-	act := &Activity{
-		Settings: s,
-	}
+	act := newTestActivity(s)
 
 	tc := test.NewActivityContext(act.Metadata())
 	tc.SetInput("searchString", "tell me something about tibco businessworks")
@@ -136,9 +148,7 @@ func TestSearchDocumentsInvalidVectorStoreId(t *testing.T) {
 	// Initialize settings from environment variables
 	s := populateSettingsFromEnv()
 
-	act := &Activity{
-		Settings: s,
-	}
+	act := newTestActivity(s)
 
 	tc := test.NewActivityContext(act.Metadata())
 	tc.SetInput("searchString", "tell me something about tibco businessworks")

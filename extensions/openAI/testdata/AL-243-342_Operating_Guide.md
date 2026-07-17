@@ -131,7 +131,12 @@ Keep out of reach of children.
 
 9. Troubleshooting
 
-ProblemPossible CauseSolutionEngine won’t startNo fuelRefill petrol tankRough runningDirty air filterClean or replace filterPoor cuttingDull bladeSharpen or replace bladeExcessive vibrationLoose bladeTighten blade bolt
+| Problem | Possible Cause | Solution |
+ |--------|----------------|----------|
+ | Engine won’t start | No fuel | Refill petrol tank |
+ | Rough running | Dirty air filter | Clean or replace filter |
+ | Poor cutting | Dull blade | Sharpen or replace blade |
+ | Excessive vibration | Loose blade | Tighten blade bolt |
 
 10. Technical Specifications
 
